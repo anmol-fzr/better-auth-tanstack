@@ -80,7 +80,7 @@ The `useSession` hook is used to fetch the session.
 #### Example
 
 ```tsx
-import { useSession } from "@/lib/use-auth-hooks"
+import { useSession } from "@/hooks/use-auth-hooks"
 
 function MyComponent() {
     const { data: sessionData, session, user, isPending, refetch } = useSession()
@@ -104,7 +104,7 @@ The `useToken` hook is used to fetch the JWT token if better-auth JWT plugin is 
 #### Example
 
 ```tsx
-import { useToken } from "@/lib/use-auth-hooks"
+import { useToken } from "@/hooks/use-auth-hooks"
 
 function MyComponent() {
     const { token, isPending } = useToken()
