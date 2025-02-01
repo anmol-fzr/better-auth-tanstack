@@ -111,7 +111,7 @@ function MyComponent() {
 
     if (isPending) return <div>Loading...</div>
 
-    return <div>Your token: {token?.token}</div>
+    return <div>JWT: {token}</div>
 }
 ```
 
