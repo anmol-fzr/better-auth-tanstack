@@ -8,7 +8,7 @@ First, you need to install [better-auth](https://better-auth.com) and [Tanstack 
 
 ## Installation
 
-```sh
+```bash
 npm install @daveyplate/better-auth-tanstack
 ```
 
