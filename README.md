@@ -81,7 +81,7 @@ function MyComponent() {
 
     if (isPending) return <div>Loading...</div>
 
-    return <div>Welcome, {user?.name}</div>
+    return <div>Welcome, {user?.email}</div>
 }
 ```
 
