@@ -12,7 +12,9 @@ First, you need to install [better-auth](https://better-auth.com) and [Tanstack 
 npm install @daveyplate/better-auth-tanstack
 ```
 
-For the `useSession` hook to refresh on sign in, you must use the `callbackURL` parameter in your `signIn` & `signUp` functions, or manually call `refetch` or `invalidateQueries` for `["session"]`. If you are using Next.js protected middleware routes, `callbackURL` is recommended because it will perform a hard navigation which will clear the router cache.
+For the `useSession` hook to refresh on sign in, you must use the `callbackURL` parameter in your `signIn`, `signUp` & `signOut` functions, or manually call `refetch` or `invalidateQueries` for `["session"]` in the `onSuccess` callback. 
+
+If you are using Next.js protected middleware routes, `callbackURL` is recommended because it will perform a hard navigation which will clear the router cache.
 
 [@daveyplate/better-auth-ui](https://github.com/daveyplate/better-auth-ui) will handle this for you, it defaults callbackURL to "/", and the `AuthCard` also accepts a `callbackURL` prop.
 
@@ -77,7 +79,7 @@ The `useSession` hook is used to fetch the session.
 import { useSession } from "@/lib/use-auth-hooks"
 
 function MyComponent() {
-    const { data: sessionData, session, user, isPending } = useSession()
+    const { data: sessionData, session, user, isPending, refetch } = useSession()
 
     if (isPending) return <div>Loading...</div>
 
