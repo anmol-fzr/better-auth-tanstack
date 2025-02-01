@@ -1,1 +1,1 @@
-# tsx-package-fumadocs
+# @daveyplate/better-auth-tanstack

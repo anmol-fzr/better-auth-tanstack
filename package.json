@@ -1,8 +1,8 @@
 {
-    "name": "@daveyplate/tsx-package-fumadocs",
-    "homepage": "https://github.com/daveyplate/tsx-package-fumadocs",
+    "name": "@daveyplate/better-auth-tanstack",
+    "homepage": "https://github.com/daveyplate/better-auth-tanstack",
     "version": "0.0.1",
-    "description": "TSX Package + Fumadocs",
+    "description": "Tanstack hooks for better-auth",
     "module": "dist/index",
     "types": "dist/index",
     "exports": "./dist/index.js",
@@ -16,6 +16,15 @@
         "prepublishOnly": "rm -rf dist && tsc"
     },
     "keywords": [
+        "better-auth",
+        "tanstack",
+        "react-query",
+        "tanstack-query",
+        "query",
+        "auth",
+        "hooks",
+        "prefetch",
+        "ssr",
         "typescript"
     ],
     "author": "daveycodez",
@@ -23,9 +32,12 @@
     "devDependencies": {
         "@eslint/eslintrc": "^3",
         "@stylistic/eslint-plugin": "^3.0.0",
+        "@tanstack/query-core": "file:../new-tech/node_modules/@tanstack/query-core",
+        "@tanstack/react-query": "file:../new-tech/node_modules/@tanstack/react-query",
         "@types/node": "^22.10.2",
         "@types/react": "^19.0.8",
         "@types/react-dom": "^19",
+        "better-auth": "^1.1.15",
         "eslint": "^9",
         "eslint-config-next": "15.1.6",
         "eslint-plugin-import": "^2.31.0",
@@ -39,6 +51,9 @@
         "typescript": "^5.6.2"
     },
     "peerDependencies": {
+        "better-auth": ">=1.1.15",
+        "@tanstack/query-core": ">=5.65.0",
+        "@tanstack/react-query": ">=5.65.0",
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0"
     },
