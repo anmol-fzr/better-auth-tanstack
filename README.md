@@ -42,7 +42,7 @@ export default function Layout({
 
 ## AuthQueryProvider Props
 
-The `AuthQueryProvider` component accepts the following props. The default `staleTime` for sessions is 30s and for tokens is 60s.
+The `AuthQueryProvider` component accepts the following props. The default `staleTime` for sessions is 30 seconds and for JWT tokens is 10 minutes.
 
 | Prop                  | Type                                                                 | Description                                                                 |
 |-----------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------|

@@ -18,7 +18,7 @@ export function useToken<
     const { session } = useSession(authClient, options)
     const queryResult = useQuery<{ token: string } | null>({
         enabled: !!session,
-        staleTime: 60 * 1000,
+        staleTime: 600 * 1000,
         ...queryOptions,
         ...tokenQueryOptions,
         ...options,
