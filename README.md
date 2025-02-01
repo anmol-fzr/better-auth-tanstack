@@ -29,6 +29,19 @@ function MyApp({ Component, pageProps }) {
 export default MyApp
 ```
 
+## AuthQueryProvider Props
+
+The `AuthQueryProvider` component accepts the following props:
+
+| Prop                  | Type                                                                 | Description                                                                 |
+|-----------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| `queryOptions`        | `UseQueryOptions`                           | Optional query options for the provider.                                    |
+| `sessionQueryOptions` | `UseQueryOptions`                           | Optional query options for the session query.                               |
+| `tokenQueryOptions`   | `UseQueryOptions`                           | Optional query options for the token query.                                 |
+| `sessionKey`          | `string[]`                                                           | Optional key for the session query.                                         |
+| `tokenKey`            | `string[]`                                                           | Optional key for the token query.                                           |
+
+
 ## Creating `use-auth-hooks.ts`
 
 Create a file named `use-auth-hooks.ts` and set up the hooks using `createAuthHooks` function. This function takes the auth client instance and returns the hooks with full type safety and inference from your authClient.
