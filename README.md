@@ -131,6 +131,7 @@ The `prefetchSession` function is used to prefetch session data and store it in 
 | auth    | Auth     | The server auth instance.          |
 | queryClient | QueryClient  | The query client instance.              |
 | queryKey  | `string[]`  | Optional key for the session query. Default is `["session"]`. |
+| headers  | `Headers`   | The headers object from the server request. |
 
 #### RSC Example
 
