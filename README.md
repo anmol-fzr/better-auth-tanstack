@@ -46,11 +46,11 @@ The `AuthQueryProvider` component accepts the following props. The default `stal
 
 | Prop                  | Type                                                                 | Description                                                                 |
 |-----------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| `queryOptions`        | `UseQueryOptions`                           | Optional query options for the provider.                                    |
-| `sessionQueryOptions` | `UseQueryOptions`                           | Optional query options for the session query.                               |
-| `tokenQueryOptions`   | `UseQueryOptions`                           | Optional query options for the token query.                                 |
-| `sessionKey`          | `string[]`                                                           | Optional key for the session query. The default is `["session"]`.                                         |
-| `tokenKey`            | `string[]`                                                           | Optional key for the token query. The default is `["token"]`.                                           |
+| `queryOptions`?        | `UseQueryOptions`                           | Optional query options for the provider.                                    |
+| `sessionQueryOptions`? | `UseQueryOptions`                           | Optional query options for the session query.                               |
+| `tokenQueryOptions`?   | `UseQueryOptions`                           | Optional query options for the token query.                                 |
+| `sessionKey`?          | `string[]`                                                           | Optional key for the session query. The default is `["session"]`.                                         |
+| `tokenKey`?            | `string[]`                                                           | Optional key for the token query. The default is `["token"]`.                                           |
 
 
 ## Creating `use-auth-hooks.ts`
@@ -75,7 +75,7 @@ The `useSession` hook is used to fetch the session.
 
 | Prop      | Type                                                                 | Description                                  |
 |-----------|----------------------------------------------------------------------|----------------------------------------------|
-| options   | UseQueryOptions | Optional query options for the session query.|
+| options?   | UseQueryOptions | Optional query options for the session query.|
 
 #### Example
 
@@ -99,7 +99,7 @@ The `useToken` hook is used to fetch the JWT token if better-auth JWT plugin is 
 
 | Prop      | Type                                                                 | Description                                  |
 |-----------|----------------------------------------------------------------------|----------------------------------------------|
-| options   | UseQueryOptions | Optional query options for the token query.  |
+| options?   | UseQueryOptions | Optional query options for the token query.  |
 
 #### Example
 
@@ -130,8 +130,8 @@ The `prefetchSession` function is used to prefetch session data and store it in 
 |-------------|---------------|-------------------------------------------------------|
 | auth    | Auth     | The server auth instance.          |
 | queryClient | QueryClient  | The query client instance.              |
-| queryKey  | `string[]`  | Optional key for the session query. Default is `["session"]`. |
 | headers  | `Headers`   | The headers object from the server request. |
+| queryKey?  | `string[]`  | Optional key for the session query. Default is `["session"]`. |
 
 #### RSC Example
 
