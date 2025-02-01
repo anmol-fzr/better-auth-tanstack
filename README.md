@@ -18,7 +18,7 @@ For the `useSession` hook to refresh on sign in, you must use the `callbackURL` 
 
 If you are using Next.js protected middleware routes, `callbackURL` is recommended because it will perform a hard navigation which will clear the router cache.
 
-[@daveyplate/better-auth-ui](https://github.com/daveyplate/better-auth-ui) will handle this for you, it defaults callbackURL to "/", and the `AuthCard` also accepts a `callbackURL` prop.
+[@daveyplate/better-auth-ui](https://github.com/daveyplate/better-auth-ui) will handle this for you, it defaults callbackURL to `"/"`, and the `AuthCard` also accepts a `callbackURL` prop.
 
 ## Setting up the AuthQueryProvider
 
