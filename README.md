@@ -120,33 +120,14 @@ The `prefetchSession` function is used to prefetch session data and store it in 
 
 #### Props
 
-| Prop         | Type                                      | Description                                      |
-|--------------|-------------------------------------------|--------------------------------------------------|
-| 
-
-auth
-
-       | 
-
-Auth
-
-                                   | The authentication client instance.              |
-| 
-
-queryClient
-
-| 
-
-QueryClient
-
-                             | The query client instance.                       |
-| 
-
-queryKey
-
-   | `string[]`                                | Optional key for the session query. Default is `["session"]`. |
+| Prop    | Type     | Description                      |
+|-------------|---------------|-------------------------------------------------------|
+| auth    | Auth     | The authentication client instance.          |
+| queryClient | QueryClient  | The query client instance.              |
+| queryKey  | `string[]`  | Optional key for the session query. Default is `["session"]`. |
 
 #### Example
+
 
 ```ts
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
