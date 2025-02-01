@@ -12,11 +12,13 @@ First, you need to install [better-auth](https://better-auth.com) and [Tanstack 
 npm install @daveyplate/better-auth-tanstack
 ```
 
-For the useSession hook to refresh on sign in, you must use the callbackURL parameter in your signIn & signUp functions, or manually call refetch or invalidateQueries for `["session"]`. If you are using protected middleware routes, callbackURL is recommended because it will perform a hard navigation which will clear the router cache.
+For the `useSession` hook to refresh on sign in, you must use the `callbackURL` parameter in your `signIn` & `signUp` functions, or manually call `refetch` or `invalidateQueries` for `["session"]`. If you are using Next.js protected middleware routes, `callbackURL` is recommended because it will perform a hard navigation which will clear the router cache.
+
+[@daveyplate/better-auth-ui](https://github.com/daveyplate/better-auth-ui) will handle this for you, it defaults callbackURL to "/", and the `AuthCard` also accepts a `callbackURL` prop.
 
 ## Setting up the AuthQueryProvider
 
-First, you need to set up the AuthQueryProvider in your application. This provider will supply the necessary context for the hooks to function.
+First, you need to set up the `AuthQueryProvider` in your application. This provider will supply the necessary context for the hooks to function.
 
 ```tsx
 import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack"
@@ -34,7 +36,7 @@ export default MyApp
 
 ## AuthQueryProvider Props
 
-The `AuthQueryProvider` component accepts the following props. The default staleTime for sessions is 30s and for tokens is 60s.
+The `AuthQueryProvider` component accepts the following props. The default `staleTime` for sessions is 30s and for tokens is 60s.
 
 | Prop                  | Type                                                                 | Description                                                                 |
 |-----------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------|
@@ -47,7 +49,7 @@ The `AuthQueryProvider` component accepts the following props. The default stale
 
 ## Creating `use-auth-hooks.ts`
 
-Create a file named `use-auth-hooks.ts` and set up the hooks using `createAuthHooks` function. This function takes the auth client instance and returns the hooks with full type safety and inference from your authClient.
+Create a file named `use-auth-hooks.ts` and set up the hooks using `createAuthHooks` function. This function takes the `authClient` instance and returns the hooks with full type safety and inference from your `authClient`.
 
 ```ts
 import { createAuthClient } from "better-auth/react"
@@ -61,7 +63,7 @@ export const { useSession, useToken } = createAuthHooks(authClient)
 
 ### useSession
 
-The useSession hook is used to manage the session state.
+The `useSession` hook is used to fetch the session.
 
 #### Props
 
@@ -86,7 +88,7 @@ function MyComponent() {
 
 ### useToken
 
-The useToken hook is used to manage the token state.
+The `useToken` hook is used to fetch the JWT token if better-auth JWT plugin is enabled.
 
 #### Props
 
@@ -112,19 +114,9 @@ function MyComponent() {
 ### Prefetch - Advanced Usage
 If you want to use a hybrid prefetching strategy, this is totally supported.
 
-Collecting workspace information
+### prefetchSession
 
-### 
-
-prefetchSession
-
-
-
-The 
-
-prefetchSession
-
- function is used to prefetch session data and store it in the query client.
+The `prefetchSession` function is used to prefetch session data and store it in the query client.
 
 #### Props
 
