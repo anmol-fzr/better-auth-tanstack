@@ -74,13 +74,12 @@ The `useSession` hook is used to fetch the session.
 #### Example
 
 ```tsx
-import { useSession } from "./use-auth-hooks"
+import { useSession } from "@/lib/use-auth-hooks"
 
 function MyComponent() {
-    const { data: sessionData, session, user, isPending, error } = useSession()
+    const { data: sessionData, session, user, isPending } = useSession()
 
     if (isPending) return <div>Loading...</div>
-    if (error) return <div>Error: {error.message}</div>
 
     return <div>Welcome, {user?.name}</div>
 }
@@ -99,13 +98,12 @@ The `useToken` hook is used to fetch the JWT token if better-auth JWT plugin is 
 #### Example
 
 ```tsx
-import { useToken } from "./use-auth-hooks"
+import { useToken } from "@/lib/use-auth-hooks"
 
 function MyComponent() {
-    const { token, isPending, error } = useToken()
+    const { token, isPending } = useToken()
 
     if (isPending) return <div>Loading...</div>
-    if (error) return <div>Error: {error.message}</div>
 
     return <div>Your token: {token?.token}</div>
 }
@@ -113,6 +111,8 @@ function MyComponent() {
 
 ### Prefetch - Advanced Usage
 If you want to use a hybrid prefetching strategy, this is totally supported.
+
+[Tanstack Query - Advanced Server Rendering](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr)
 
 ### prefetchSession
 
@@ -126,17 +126,17 @@ The `prefetchSession` function is used to prefetch session data and store it in 
 | queryClient | QueryClient  | The query client instance.              |
 | queryKey  | `string[]`  | Optional key for the session query. Default is `["session"]`. |
 
-#### Example
+#### RSC Example
 
 
 ```ts
+import { prefetchSession } from "@daveyplate/better-auth-tanstack/prefetch"
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
 
 import { betterAuth } from "better-auth"
-import { prefetchSession } from "./lib/prefetch-session"
 import { auth } from "@/lib/auth"
 
-async function Page() {
+export default async function Page() {
     const queryClient = new QueryClient()
 
     const { data, session, user } = await prefetchSession(auth, queryClient)
