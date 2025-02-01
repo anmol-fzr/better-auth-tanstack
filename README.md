@@ -43,8 +43,8 @@ The `AuthQueryProvider` component accepts the following props. The default `stal
 | `queryOptions`        | `UseQueryOptions`                           | Optional query options for the provider.                                    |
 | `sessionQueryOptions` | `UseQueryOptions`                           | Optional query options for the session query.                               |
 | `tokenQueryOptions`   | `UseQueryOptions`                           | Optional query options for the token query.                                 |
-| `sessionKey`          | `string[]`                                                           | Optional key for the session query.                                         |
-| `tokenKey`            | `string[]`                                                           | Optional key for the token query.                                           |
+| `sessionKey`          | `string[]`                                                           | Optional key for the session query. The default is `["session"]`.                                         |
+| `tokenKey`            | `string[]`                                                           | Optional key for the token query. The default is `["token"]`.                                           |
 
 
 ## Creating `use-auth-hooks.ts`
@@ -122,7 +122,7 @@ The `prefetchSession` function is used to prefetch session data and store it in 
 
 | Prop    | Type     | Description                      |
 |-------------|---------------|-------------------------------------------------------|
-| auth    | Auth     | The authentication client instance.          |
+| auth    | Auth     | The server auth instance.          |
 | queryClient | QueryClient  | The query client instance.              |
 | queryKey  | `string[]`  | Optional key for the session query. Default is `["session"]`. |
 
