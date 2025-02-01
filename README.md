@@ -2,14 +2,17 @@
 
 Tanstack hooks for better-auth.
 
+## Prerequisites
+
+First, you need to install [better-auth](https://better-auth.com) and [Tanstack Query](https://tanstack.com/query).
+
 ## Installation
-
-First, you need to install [better-auth](https://better-auth.com).
-
 
 ```sh
 npm install @daveyplate/better-auth-tanstack
 ```
+
+For the useSession hook to refresh on sign in, you must use the callbackURL parameter in your signIn & signUp functions, or manually call refetch or invalidateQueries for `["session"]`. If you are using protected middleware routes, callbackURL is recommended because it will perform a hard navigation which will clear the router cache.
 
 ## Setting up the AuthQueryProvider
 
