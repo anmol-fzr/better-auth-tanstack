@@ -2,7 +2,7 @@
 
 Tanstack Query hooks for Better Auth session & JWT token.
 
-More to come soon... (e.g. useListAccounts)
+More to come soon... (e.g. useListAccounts, SWR port)
 
 ## Prerequisites
 
