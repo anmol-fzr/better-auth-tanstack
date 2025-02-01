@@ -3,9 +3,17 @@
     "homepage": "https://github.com/daveyplate/better-auth-tanstack",
     "version": "0.0.1",
     "description": "Tanstack hooks for better-auth",
-    "module": "dist/index",
-    "types": "dist/index",
-    "exports": "./dist/index.js",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./prefetch": {
+            "types": "./dist/prefetch.d.ts",
+            "default": "./dist/prefetch.js"
+        }
+    },
     "files": [
         "src",
         "dist"

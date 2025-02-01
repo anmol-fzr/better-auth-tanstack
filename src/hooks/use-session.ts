@@ -44,7 +44,7 @@ export function useSession<
 
         if (!data) return
 
-        const expiresAt = data.session.expiresAt?.getTime()
+        const expiresAt = new Date(data.session.expiresAt).getTime()
         const now = new Date().getTime()
         const timeUntilExpiry = expiresAt - now
 
@@ -58,7 +58,7 @@ export function useSession<
     const isSessionExpired = () => {
         if (!data) return true
 
-        const expiresAt = data.session.expiresAt.getTime()
+        const expiresAt = new Date(data.session.expiresAt).getTime()
         const now = Date.now()
 
         return expiresAt < now
