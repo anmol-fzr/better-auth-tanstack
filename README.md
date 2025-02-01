@@ -1,6 +1,8 @@
 # @daveyplate/better-auth-tanstack
 
-Tanstack hooks for better-auth session & JWT tokens.
+Tanstack Query hooks for better-auth session & JWT token.
+
+More to come soon (e.g. useListAccounts...)
 
 ## Prerequisites
 
