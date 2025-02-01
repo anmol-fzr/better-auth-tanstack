@@ -31,7 +31,7 @@ export default MyApp
 
 ## AuthQueryProvider Props
 
-The `AuthQueryProvider` component accepts the following props:
+The `AuthQueryProvider` component accepts the following props. The default staleTime for sessions is 30s and for tokens is 60s.
 
 | Prop                  | Type                                                                 | Description                                                                 |
 |-----------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------|
@@ -103,6 +103,73 @@ function MyComponent() {
     if (error) return <div>Error: {error.message}</div>
 
     return <div>Your token: {token?.token}</div>
+}
+```
+
+### Prefetch - Advanced Usage
+If you want to use a hybrid prefetching strategy, this is totally supported.
+
+Collecting workspace information
+
+### 
+
+prefetchSession
+
+
+
+The 
+
+prefetchSession
+
+ function is used to prefetch session data and store it in the query client.
+
+#### Props
+
+| Prop         | Type                                      | Description                                      |
+|--------------|-------------------------------------------|--------------------------------------------------|
+| 
+
+auth
+
+       | 
+
+Auth
+
+                                   | The authentication client instance.              |
+| 
+
+queryClient
+
+| 
+
+QueryClient
+
+                             | The query client instance.                       |
+| 
+
+queryKey
+
+   | `string[]`                                | Optional key for the session query. Default is `["session"]`. |
+
+#### Example
+
+```ts
+import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
+
+import { betterAuth } from "better-auth"
+import { prefetchSession } from "./lib/prefetch-session"
+import { auth } from "@/lib/auth"
+
+async function Page() {
+    const queryClient = new QueryClient()
+
+    const { data, session, user } = await prefetchSession(auth, queryClient)
+
+    return (
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <ClientPage />
+        </HydrationBoundary>
+    )
 }
 ```
 
