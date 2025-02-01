@@ -1,12 +1,12 @@
 # @daveyplate/better-auth-tanstack
 
-Tanstack Query hooks for better-auth session & JWT token.
+Tanstack Query hooks for Better Auth session & JWT token.
 
 More to come soon... (e.g. useListAccounts)
 
 ## Prerequisites
 
-First, you need to install [better-auth](https://better-auth.com) and [Tanstack Query](https://tanstack.com/query).
+First, you need to install [Better Auth](https://better-auth.com) and [Tanstack Query](https://tanstack.com/query).
 
 ## Installation
 
