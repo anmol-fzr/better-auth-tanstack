@@ -2,7 +2,7 @@
 
 Tanstack Query hooks for better-auth session & JWT token.
 
-More to come soon (e.g. useListAccounts...)
+More to come soon... (e.g. useListAccounts)
 
 ## Prerequisites
 
@@ -27,15 +27,17 @@ First, you need to set up the `AuthQueryProvider` in your application. This prov
 ```tsx
 import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack"
 
-function MyApp({ Component, pageProps }) {
+export default function Layout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
     return (
         <AuthQueryProvider>
-            <Component {...pageProps} />
+            {children}
         </AuthQueryProvider>
     )
 }
-
-export default MyApp
 ```
 
 ## AuthQueryProvider Props
