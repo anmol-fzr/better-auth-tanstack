@@ -13,7 +13,7 @@ export type AuthQueryContextType = {
 
 export const AuthQueryContext = createContext<AuthQueryContextType>({})
 
-export const AuthQueryProvider = ({ children, ...props }: { children: ReactNode }) => {
+export const AuthQueryProvider = ({ children, ...props }: { children: ReactNode } & AuthQueryContextType) => {
     return (
         <AuthQueryContext.Provider value={{ ...props }}>
             {children}
