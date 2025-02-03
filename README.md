@@ -18,7 +18,7 @@ For the `useSession` hook to refresh on sign in, sign out, and sign up without e
 
 If you are using Next.js App Router with protected middleware routes, `router.refresh()` is required as well to clear the router cache.
 
-[@daveyplate/better-auth-ui](https://github.com/daveyplate/better-auth-ui) provides an `` prop which is a great place to refetch for all of the auth functions, where it shows `onSessionChange={() => router.refresh()}` in the App Router example.
+[@daveyplate/better-auth-ui](https://github.com/daveyplate/better-auth-ui) The AuthCard accepts an `onSessionChange` prop which is a great place to refetch for all of the auth functions, where it shows `onSessionChange={() => router.refresh()}` in the App Router example.
 
 ## Setting up the AuthQueryProvider
 
