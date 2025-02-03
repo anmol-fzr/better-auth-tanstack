@@ -8,7 +8,7 @@ import { AuthQueryContext } from "../lib/auth-query-provider"
 import { useSession } from "./use-session"
 
 export function useToken<
-    TAuthClient extends ReturnType<typeof createAuthClient>
+    TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">
 >(
     authClient: TAuthClient,
     options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">

@@ -5,7 +5,7 @@ import { useSession } from "../hooks/use-session"
 import { useToken } from "../hooks/use-token"
 
 export function createAuthHooks<
-    TAuthClient extends ReturnType<typeof createAuthClient>
+    TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">
 >(
     authClient: TAuthClient
 ) {

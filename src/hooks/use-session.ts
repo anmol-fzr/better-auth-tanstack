@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react"
 import { AuthQueryContext } from "../lib/auth-query-provider"
 
 export function useSession<
-    TAuthClient extends ReturnType<typeof createAuthClient>
+    TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">
 >(
     authClient: TAuthClient,
     options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
