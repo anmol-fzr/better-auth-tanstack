@@ -14,11 +14,11 @@ First, you need to install and integrate [Better Auth](https://better-auth.com) 
 npm install @daveyplate/better-auth-tanstack
 ```
 
-For the `useSession` hook to refresh on sign in, you must use the `callbackURL` parameter in your `signIn`, `signUp` & `signOut` functions, or manually call `refetch` or `invalidateQueries` for `["session"]` in the `onSuccess` callback. 
+For the `useSession` hook to refresh on sign in, sign out, and sign up without email verification, you must manually call `refetch`, `queryClient.invalidateQueries()` for `["session"]`, or `queryClient.clear()` in the `onSuccess` callback of each of those functions or after awaiting and checking for an error.
 
-If you are using Next.js protected middleware routes, `callbackURL` is recommended because it will perform a hard navigation which will clear the router cache.
+If you are using Next.js App Router with protected middleware routes, `router.refresh()` is required as well to clear the router cache.
 
-[@daveyplate/better-auth-ui](https://github.com/daveyplate/better-auth-ui) will handle this for you, it defaults callbackURL to `"/"`, and the `AuthCard` also accepts a `callbackURL` prop.
+[@daveyplate/better-auth-ui](https://github.com/daveyplate/better-auth-ui) provides an `onSessionChange` prop which is a great place to refetch for all of the auth functions, where it shows `onSessionChanged={() => router.refresh()}` in the App Router example.
 
 ## Setting up the AuthQueryProvider
 
