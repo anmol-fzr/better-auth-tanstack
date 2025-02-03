@@ -16,14 +16,19 @@ export function useToken<
     const { tokenKey, tokenQueryOptions, queryOptions } = useContext(AuthQueryContext)
     const queryClient = useQueryClient()
     const { session } = useSession(authClient, options)
-    const queryResult = useQuery<{ token: string } | null>({
-        enabled: !!session,
-        staleTime: 600 * 1000,
+    const mergedOptions = {
         ...queryOptions,
         ...tokenQueryOptions,
         ...options,
+    }
+    const queryResult = useQuery<{ token: string } | null>({
+        staleTime: 600 * 1000,
+        ...mergedOptions,
+        enabled: !!session && (mergedOptions.enabled ?? true),
         queryKey: tokenKey || ["token"],
-        queryFn: async () => authClient.$fetch("/token", { throw: true }),
+        queryFn: async () => {
+            return await authClient.$fetch("/token", { throw: true })
+        },
     })
 
     const { data, refetch } = queryResult

@@ -18,13 +18,17 @@ export function useSession<
 
     const [refetchEnabled, setRefetchEnabled] = useState(false)
 
+    const mergedOptions = {
+        ...queryOptions,
+        ...sessionQueryOptions,
+        ...options,
+    }
+
     const queryResult = useQuery<SessionData>({
         refetchOnWindowFocus: refetchEnabled,
         refetchOnReconnect: refetchEnabled,
         staleTime: 30 * 1000,
-        ...queryOptions,
-        ...sessionQueryOptions,
-        ...options,
+        ...mergedOptions,
         queryKey: sessionKey || ["session"],
         queryFn: async () => {
             const session = await authClient.getSession({
