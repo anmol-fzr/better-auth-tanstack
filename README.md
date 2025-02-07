@@ -120,9 +120,9 @@ If you want to use a hybrid prefetching strategy, this is totally supported.
 
 [Tanstack Query - Advanced Server Rendering](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr)
 
-### prefetchSession
+### SSR prefetchSession
 
-The `prefetchSession` function is used to prefetch session data and store it in the query client.
+The `prefetchSession` function is used in the server to prefetch session data and store it in the query client.
 
 #### Props
 
