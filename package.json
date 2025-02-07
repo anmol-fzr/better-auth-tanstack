@@ -4,14 +4,28 @@
     "version": "1.1.4",
     "description": "Tanstack hooks for better-auth",
     "type": "module",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
     "exports": {
         ".": {
-            "types": "./dist/index.d.ts",
-            "default": "./dist/index.js"
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            },
+            "require": {
+                "types": "./dist/index.d.cts",
+                "default": "./dist/index.cjs"
+            }
         },
-        "./prefetch": {
-            "types": "./dist/prefetch.d.ts",
-            "default": "./dist/prefetch.js"
+        "./server": {
+            "import": {
+                "types": "./dist/server.d.ts",
+                "default": "./dist/server.js"
+            },
+            "require": {
+                "types": "./dist/server.d.cts",
+                "default": "./dist/server.cjs"
+            }
         }
     },
     "files": [
@@ -19,9 +33,9 @@
         "dist"
     ],
     "scripts": {
-        "build": "tsc",
+        "build": "tsup --clean --dts",
         "dev": "tsc-watch --onSuccess \"npx eslint\"",
-        "prepublishOnly": "rm -rf dist && tsc"
+        "prepublishOnly": "rm -rf dist && tsup --clean --dts"
     },
     "keywords": [
         "better-auth",
@@ -54,14 +68,15 @@
         "react": "file:../new-tech/node_modules/react",
         "react-dom": "file:../new-tech/node_modules/react-dom",
         "tsc-watch": "^6.2.1",
+        "tsup": "^8.3.6",
         "tsx": "^4.19.2",
         "turbo": "^2.3.4",
         "typescript": "^5.6.2"
     },
     "peerDependencies": {
-        "better-auth": ">=1.1.15",
         "@tanstack/query-core": ">=5.65.0",
         "@tanstack/react-query": ">=5.65.0",
+        "better-auth": ">=1.1.15",
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0"
     },

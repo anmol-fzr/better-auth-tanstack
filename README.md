@@ -115,7 +115,7 @@ function MyComponent() {
 }
 ```
 
-### Prefetch - Advanced Usage
+### Server-Side Prefetch - Advanced Usage
 If you want to use a hybrid prefetching strategy, this is totally supported.
 
 [Tanstack Query - Advanced Server Rendering](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr)
@@ -137,7 +137,7 @@ The `prefetchSession` function is used to prefetch session data and store it in 
 
 
 ```ts
-import { prefetchSession } from "@daveyplate/better-auth-tanstack/prefetch"
+import { prefetchSession } from "@daveyplate/better-auth-tanstack/server"
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query"
 import { headers } from "next/headers"
 
