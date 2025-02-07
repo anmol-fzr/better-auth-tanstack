@@ -10,8 +10,8 @@ export async function prefetchSession<
     queryKey = ["session"]
 ) {
     type SessionData = TAuth["$Infer"]["Session"] | null
-    type User = TAuth["$Infer"]["Session"]["user"] | null
-    type Session = TAuth["$Infer"]["Session"]["session"] | null
+    type User = TAuth["$Infer"]["Session"]["user"] | undefined
+    type Session = TAuth["$Infer"]["Session"]["session"] | undefined
 
     const data = await auth.api.getSession({ headers }) as SessionData
 
