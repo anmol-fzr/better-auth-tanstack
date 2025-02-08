@@ -22,12 +22,15 @@ If you are using Next.js App Router with protected middleware routes, `router.re
 
 ## Setting up the AuthQueryProvider
 
-First, you need to set up the `AuthQueryProvider` in your application. This provider will supply the necessary context for the hooks to function.
+First, you need to set up the `AuthQueryProvider` in your application. This provider will supply the necessary context for the hooks to function. Requires `"use client"` directive.
 
+### app/providers.tsx
 ```tsx
+"use client"
+
 import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack"
 
-export default function Layout({
+export default function Providers({
   children,
 }: {
   children: React.ReactNode
@@ -36,6 +39,23 @@ export default function Layout({
         <AuthQueryProvider>
             {children}
         </AuthQueryProvider>
+    )
+}
+```
+
+### app/layout.tsx
+```tsx
+import { Providers } from "./providers"
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+    return (
+        <Providers>
+            {children}
+        </Providers>
     )
 }
 ```
