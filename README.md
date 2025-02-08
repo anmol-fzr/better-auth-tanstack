@@ -22,7 +22,7 @@ If you are using Next.js App Router with protected middleware routes, `router.re
 
 ## Setting up the AuthQueryProvider
 
-First, you need to set up the `AuthQueryProvider` in your application. This provider will supply the necessary context for the hooks to function. Requires `"use client"` directive.
+First, you need to set up the `AuthQueryProvider` in your application. This provider will supply the necessary context for the hooks to function. Requires `"use client"` directive for Next.js App Router.
 
 ### app/providers.tsx
 ```tsx
