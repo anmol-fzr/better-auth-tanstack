@@ -36,25 +36,25 @@ export function useToken<
     const { data, refetch } = queryResult
     const payload = useMemo(() => data ? decodeJwt(data.token) : null, [data])
 
-    useEffect(() => {
-        if (!data) return
+    // useEffect(() => {
+    //     if (!data) return
 
-        const payload = decodeJwt(data.token)
-        if (!payload) return
+    //     const payload = decodeJwt(data.token)
+    //     if (!payload) return
 
-        if (!user) {
-            console.log("User not found, removing token")
-            queryClient.removeQueries({ queryKey: tokenKey! })
+    //     if (!user) {
+    //         console.log("User not found, removing token")
+    //         queryClient.removeQueries({ queryKey: tokenKey! })
 
-            return
-        }
+    //         return
+    //     }
 
-        if (user.id != payload?.sub) {
-            console.log("User ID mismatch, refetching token", user, payload)
-            queryClient.invalidateQueries({ queryKey: tokenKey! })
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(user), JSON.stringify(data)])
+    //     if (user.id != payload?.sub) {
+    //         console.log("User ID mismatch, refetching token", user, payload)
+    //         queryClient.invalidateQueries({ queryKey: tokenKey! })
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [JSON.stringify(user), JSON.stringify(data)])
 
     useEffect(() => {
         if (!data?.token) return
