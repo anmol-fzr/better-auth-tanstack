@@ -83,7 +83,12 @@ import { createAuthClient } from "better-auth/react"
 import { createAuthHooks } from "@daveyplate/better-auth-tanstack"
 import { authClient } from "@/lib/auth-client"
 
-export const { useSession, usePrefetchSession, useToken } = createAuthHooks(authClient)
+export const { 
+    useSession, 
+    usePrefetchSession, 
+    useToken,
+    useListAccounts
+} = createAuthHooks(authClient)
 ```
 
 ## Using the Hooks
@@ -145,6 +150,49 @@ function MyComponent() {
 }
 ```
 
+## useListAccounts
+
+The `useListAccounts` hook allows you to list and manage user accounts linked to different providers.
+
+### Usage
+
+```ts
+import { useListAccounts } from "@/hooks/use-auth-hooks"
+
+function AccountList() {
+  const { accounts, unlinkAccount, unlinkError, isLoading, error } = useListAccounts()
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>
+
+  return (
+    <div>
+      <h2>Linked Accounts</h2>
+      <ul>
+        {accounts?.map(account => (
+          <li key={account.id}>
+            {account.provider}
+            <button onClick={() => unlinkAccount(account.provider)}>Unlink</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+```
+
+Use the `unlinkAccount` function to unlink an account by provider ID. This is the optimistic example.
+
+```ts
+unlinkAccount("github")
+  .then({ error } => {
+    if (error) {
+      console.error("Failed to unlink account:", error)
+    } else {
+      console.log("Account unlinked successfully")
+    }
+  })
+```
 
 ### Mutations - updateUser
 
