@@ -1,6 +1,6 @@
 # @daveyplate/better-auth-tanstack
 
-Tanstack Query hooks for Better Auth session & JWT token.
+Tanstack Query hooks for Better Auth. Provides tighter control of when requests are made, optimistic mutations, and supports offline caching for offline auth via Persist Cients.
 
 More to come soon... (e.g. more SSR prefetches, organization plugin hooks, multisession plugin, SWR port, tighter better-auth-ui integration)
 
