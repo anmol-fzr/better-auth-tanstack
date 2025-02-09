@@ -149,6 +149,11 @@ function MyComponent() {
 ### Mutations - updateUser
 
 Optimistic example to update user's name with no loaders. Only sends a single HTTP request to `/api/auth/update-user`. Optimistically updates the user in the Tanstack Query cache instantly. Reverts on error. Uses the default setting for `optimisticMutate` (true) prop on `AuthQueryProvider`.
+
+Errors can be handled by showing an error Toast or throwing an error to an ErrorBoundary. We also support the Tanstack Query global error configuration:
+
+`queryClient.getQueryCache().config.onError` gets called automatically, so you can set up global error toasts.
+
 ```tsx
 "use client"
 
