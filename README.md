@@ -83,7 +83,7 @@ import { createAuthClient } from "better-auth/react"
 import { createAuthHooks } from "@daveyplate/better-auth-tanstack"
 import { authClient } from "@/lib/auth-client"
 
-export const { useSession, useToken } = createAuthHooks(authClient)
+export const { useSession, usePrefetchSession, useToken } = createAuthHooks(authClient)
 ```
 
 ## Using the Hooks
