@@ -87,7 +87,8 @@ export const {
     useSession, 
     usePrefetchSession, 
     useToken,
-    useListAccounts
+    useListAccounts,
+    useListSessions
 } = createAuthHooks(authClient)
 ```
 
