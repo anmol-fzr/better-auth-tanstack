@@ -27,7 +27,7 @@ export function useToken<
         staleTime: 600 * 1000,
         ...mergedOptions,
         enabled: !!user && (mergedOptions.enabled ?? true),
-        queryKey: tokenKey!,
+        queryKey: [...tokenKey!, user?.id],
         queryFn: async () => {
             return await authClient.$fetch("/token", { throw: true })
         },
@@ -35,22 +35,6 @@ export function useToken<
 
     const { data, refetch } = queryResult
     const payload = useMemo(() => data ? decodeJwt(data.token) : null, [data])
-
-    useEffect(() => {
-        if (!data) return
-
-        const payload = decodeJwt(data.token)
-
-        if (!user) {
-            queryClient.removeQueries({ queryKey: tokenKey! })
-
-            return
-        }
-
-        if (user.id !== payload?.sub) {
-            refetch()
-        }
-    }, [user, data, refetch, tokenKey, queryClient])
 
     useEffect(() => {
         if (!data?.token) return
