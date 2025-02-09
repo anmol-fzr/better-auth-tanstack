@@ -1,5 +1,3 @@
-import { clearTimeout } from "timers"
-
 import { AnyUseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
 import { decodeJwt } from "jose"
