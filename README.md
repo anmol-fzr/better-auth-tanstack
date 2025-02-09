@@ -181,7 +181,7 @@ function AccountList() {
 }
 ```
 
-Use the `unlinkAccount` function to unlink an account by provider ID. This is the optimistic example.
+Use the `unlinkAccount` function to unlink an account by provider ID. This is the optimistic example. See below for non-optimistic examples.
 
 ```ts
 unlinkAccount("github")
