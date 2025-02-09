@@ -71,6 +71,7 @@ The `AuthQueryProvider` component accepts the following props. The default `stal
 | tokenQueryOptions?   | UseQueryOptions                           | Optional query options for the token query.                                 |
 | sessionKey?          | string[]                                                           | Optional key for the session query. The default is `["session"]`.                                         |
 | tokenKey?            | string[]                                                           | Optional key for the token query. The default is `["token"]`.                                           |
+| optimisticMutate?            | boolean                                                           | Whether to perform optimistic updates. The default is `true`.                                           |
 
 
 ## Creating `use-auth-hooks.ts`
@@ -103,7 +104,7 @@ The `useSession` hook is used to fetch the session.
 import { useSession } from "@/hooks/use-auth-hooks"
 
 function MyComponent() {
-    const { data: sessionData, session, user, isPending, refetch } = useSession()
+    const { data: sessionData, session, user, isPending, refetch, error, updateUser, updateError } = useSession()
 
     if (isPending) return <div>Loading...</div>
 
@@ -132,6 +133,175 @@ function MyComponent() {
     if (isPending) return <div>Loading...</div>
 
     return <div>JWT: {token}</div>
+}
+```
+
+
+### Mutations - updateUser
+
+Optimistic example to update user's name with no loaders. Only sends a single HTTP request to `/api/auth/update-user`. Optimistically updates the user in the Tanstack Query cache instantly. Reverts on error. Uses the default setting for `optimisticMutate` (true) prop on `AuthQueryProvider`.
+```tsx
+"use client"
+
+import { useState } from "react"
+
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useSession } from "@/hooks/use-auth-hooks"
+
+export default function SettingsPage() {
+    const { user, isPending, updateUser, updateError } = useSession()
+    const [disabled, setDisabled] = useState(true)
+
+    const updateProfile = (formData: FormData) => {
+        const name = formData.get("name") as string
+
+        setDisabled(true)
+        updateUser({ name })
+    }
+
+    // useEffect(() => {
+    //     if (updateError) {
+    //         // Show an error Toast
+    //     }
+    // }, [updateError])
+
+    if (isPending || !user) {
+        return (
+            <div>
+                Loading...
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex flex-col items-center gap-4 my-auto">
+            <Card className="w-full max-w-md">
+                <CardHeader>
+                    <CardTitle>
+                        Change Name
+                    </CardTitle>
+                </CardHeader>
+
+                <CardContent>
+                    <form
+                        action={updateProfile}
+                        className="flex flex-col gap-4 items-start"
+                    >
+                        <Label htmlFor="name">
+                            Name
+                        </Label>
+
+                        <Input
+                            defaultValue={user.name}
+                            name="name"
+                            placeholder="Name"
+                            onChange={() => setDisabled(false)}
+                        />
+
+                        <Button disabled={disabled && !updateError}>
+                            Save
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    )
+}
+```
+
+Unoptimistic example with `useActionState` to show loaders for updating a user's name. Set `optimisticMutate` to `false` in the `AuthQueryProvider` props to disable optimistic cache updates. Sends a request to `/api/auth/update-user` then updates the user in the Tanstack Query cache after the request is successful. Then revalidates the session by sending another request to `/api/auth/get-session`.
+```tsx
+"use client"
+
+import { Loader2 } from "lucide-react"
+import { useActionState } from "react"
+
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useSession } from "@/hooks/use-auth-hooks"
+import { cn } from "@/lib/utils"
+
+export default function SettingsPage() {
+    const { user, isPending, updateUser, updateError } = useSession()
+    const [disabled, setDisabled] = useState(true)
+
+    type ActionState = Parameters<typeof updateUser>[0]
+
+    const updateProfile = async (_: ActionState, formData: FormData) => {
+        const name = formData.get("name") as string
+
+        setDisabled(true)
+
+        const { error } = await updateUser({ name })
+
+        if (error) {
+            // Show an error Toast or throw an error to an ErrorBoundary
+
+            setDisabled(false)
+        }
+
+        return { name } as ActionState
+    }
+
+    const [state, action, isSubmitting] = useActionState(updateProfile, {})
+
+    // useEffect(() => {
+    //     if (updateError) {
+    //          setDisabled(false)
+    //         // Show an error Toast
+    //     }
+    // }, [updateError])
+
+    if (isPending || !user) {
+        return (
+            <div>
+                Loading...
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex flex-col items-center gap-4 my-auto">
+            <Card className="w-full max-w-md">
+                <CardHeader>
+                    <CardTitle>
+                        Change Name
+                    </CardTitle>
+                </CardHeader>
+
+                <CardContent>
+                    <form
+                        action={action}
+                        className="flex flex-col gap-4 items-start"
+                    >
+                        <Label htmlFor="name">
+                            Name
+                        </Label>
+
+                        <Input
+                            defaultValue={state?.name ?? user.name}
+                            name="name"
+                            placeholder="Name"
+                            onChange={() => setDisabled(false)}
+                        />
+
+                        <Button disabled={isSubmitting || disabled}>
+                            <span className={cn(isSubmitting && "opacity-0")}>
+                                Save
+                            </span>
+
+                            {isSubmitting && <Loader2 className="animate-spin absolute" />}
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    )
 }
 ```
 

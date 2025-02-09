@@ -9,13 +9,23 @@ export type AuthQueryOptions = {
     tokenQueryOptions?: Omit<AnyUseQueryOptions, "queryFn" | "queryKey">
     sessionKey?: string[]
     tokenKey?: string[]
+    optimisticMutate?: boolean
+}
+
+export const defaultAuthQueryOptions: AuthQueryOptions = {
+    queryOptions: {},
+    sessionQueryOptions: {},
+    tokenQueryOptions: {},
+    sessionKey: ["session"],
+    tokenKey: ["token"],
+    optimisticMutate: true,
 }
 
 export const AuthQueryContext = createContext<AuthQueryOptions>({})
 
 export const AuthQueryProvider = ({ children, ...props }: { children: ReactNode } & AuthQueryOptions) => {
     return (
-        <AuthQueryContext.Provider value={{ ...props }}>
+        <AuthQueryContext.Provider value={{ ...defaultAuthQueryOptions, ...props }}>
             {children}
         </AuthQueryContext.Provider>
     )

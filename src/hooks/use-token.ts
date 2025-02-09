@@ -25,7 +25,7 @@ export function useToken<
         staleTime: 600 * 1000,
         ...mergedOptions,
         enabled: !!session && (mergedOptions.enabled ?? true),
-        queryKey: tokenKey || ["token"],
+        queryKey: tokenKey!,
         queryFn: async () => {
             return await authClient.$fetch("/token", { throw: true })
         },
