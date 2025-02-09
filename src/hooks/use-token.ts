@@ -32,6 +32,7 @@ export function useToken<
     })
 
     const { data, refetch } = queryResult
+    const payload = data ? decodeJwt(data.token) : null
 
     useEffect(() => {
         if (!data?.token) return
@@ -53,7 +54,6 @@ export function useToken<
     const isTokenExpired = () => {
         if (!data?.token) return true
 
-        const payload = decodeJwt(data.token)
         if (!payload?.exp) return true
 
         const currentTime = Date.now() / 1000
@@ -63,5 +63,5 @@ export function useToken<
 
     const tokenData = (!session || isTokenExpired()) ? undefined : data
 
-    return { ...queryResult, data: tokenData, token: tokenData?.token }
+    return { ...queryResult, data: tokenData, token: tokenData?.token, payload }
 }
