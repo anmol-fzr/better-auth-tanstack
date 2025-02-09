@@ -53,7 +53,8 @@ export function useToken<
             console.log("User ID mismatch, refetching token", user, payload)
             queryClient.invalidateQueries({ queryKey: tokenKey! })
         }
-    }, [user, data, refetch, tokenKey, queryClient])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [JSON.stringify(user), JSON.stringify(data)])
 
     useEffect(() => {
         if (!data?.token) return
