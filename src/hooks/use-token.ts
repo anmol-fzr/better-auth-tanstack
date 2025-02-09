@@ -1,7 +1,9 @@
+import { clearTimeout } from "timers"
+
 import { AnyUseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
 import { decodeJwt } from "jose"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useMemo } from "react"
 
 import { AuthQueryContext } from "../lib/auth-query-provider"
 
@@ -13,18 +15,20 @@ export function useToken<
     authClient: TAuthClient,
     options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
 ) {
-    const { tokenKey, tokenQueryOptions, queryOptions } = useContext(AuthQueryContext)
     const queryClient = useQueryClient()
-    const { session } = useSession(authClient, options)
+    const { tokenKey, tokenQueryOptions, queryOptions } = useContext(AuthQueryContext)
+    const { user } = useSession(authClient, options)
+
     const mergedOptions = {
         ...queryOptions,
         ...tokenQueryOptions,
         ...options,
     }
+
     const queryResult = useQuery<{ token: string } | null>({
         staleTime: 600 * 1000,
         ...mergedOptions,
-        enabled: !!session && (mergedOptions.enabled ?? true),
+        enabled: !!user && (mergedOptions.enabled ?? true),
         queryKey: tokenKey!,
         queryFn: async () => {
             return await authClient.$fetch("/token", { throw: true })
@@ -32,7 +36,19 @@ export function useToken<
     })
 
     const { data, refetch } = queryResult
-    const payload = data ? decodeJwt(data.token) : null
+    const payload = useMemo(() => data ? decodeJwt(data.token) : null, [data])
+
+    useEffect(() => {
+        if (!user) {
+            queryClient.removeQueries({ queryKey: tokenKey! })
+
+            return
+        }
+
+        if (user.id !== payload?.sub) {
+            refetch()
+        }
+    }, [user, payload, refetch, tokenKey, queryClient])
 
     useEffect(() => {
         if (!data?.token) return
@@ -61,7 +77,7 @@ export function useToken<
         return payload.exp < currentTime
     }
 
-    const tokenData = (!session || isTokenExpired()) ? undefined : data
+    const tokenData = (!user || isTokenExpired()) ? undefined : data
 
     return { ...queryResult, data: tokenData, token: tokenData?.token, payload }
 }
