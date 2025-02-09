@@ -145,7 +145,7 @@ The `useToken` hook is used to fetch the JWT token if better-auth JWT plugin is 
 import { useToken } from "@/hooks/use-auth-hooks"
 
 function MyComponent() {
-    const { token, isPending } = useToken()
+    const { token, payload, isPending } = useToken()
 
     if (isPending) return <div>Loading...</div>
 
