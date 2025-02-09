@@ -71,6 +71,8 @@ The `AuthQueryProvider` component accepts the following props. The default `stal
 | tokenQueryOptions?   | UseQueryOptions                           | Optional query options for the token query.                                 |
 | sessionKey?          | string[]                                                           | Optional key for the session query. The default is `["session"]`.                                         |
 | tokenKey?            | string[]                                                           | Optional key for the token query. The default is `["token"]`.                                           |
+| listAccountsKey?            | string[]                                                           | Optional key for the listAccounts query. The default is `["list-accounts"]`.                                           |
+| listSessionsKey?            | string[]                                                           | Optional key for the listSessions query. The default is `["list-sessions"]`.                                           |
 | optimisticMutate?            | boolean                                                           | Whether to perform optimistic updates. The default is `true`.                                           |
 
 
