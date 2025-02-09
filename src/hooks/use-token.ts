@@ -27,7 +27,7 @@ export function useToken<
         staleTime: 600 * 1000,
         ...mergedOptions,
         enabled: !!user && (mergedOptions.enabled ?? true),
-        queryKey: [...tokenKey!, user?.id],
+        queryKey: tokenKey!,
         queryFn: async () => {
             return await authClient.$fetch("/token", { throw: true })
         },
@@ -35,6 +35,25 @@ export function useToken<
 
     const { data, refetch } = queryResult
     const payload = useMemo(() => data ? decodeJwt(data.token) : null, [data])
+
+    useEffect(() => {
+        if (!data) return
+
+        const payload = decodeJwt(data.token)
+        if (!payload) return
+
+        if (!user) {
+            console.log("User not found, removing token")
+            queryClient.removeQueries({ queryKey: tokenKey! })
+
+            return
+        }
+
+        if (user.id != payload?.sub) {
+            console.log("User ID mismatch, refetching token", user, payload)
+            queryClient.invalidateQueries({ queryKey: tokenKey! })
+        }
+    }, [user, data, refetch, tokenKey, queryClient])
 
     useEffect(() => {
         if (!data?.token) return
