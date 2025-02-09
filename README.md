@@ -234,6 +234,22 @@ function SessionList() {
 }
 ```
 
+## useListDeviceSessions
+
+```ts
+  const { 
+    deviceSessions, 
+    revokeSession, 
+    revokeSessionError,
+    revokeSessions,
+    revokeSessionsError,
+    setActiveSession,
+    setActiveSessionError,
+    isPending, 
+    error 
+   } = useListDeviceSessions()
+```
+
 ### Mutations - updateUser
 
 #### Optimistic example

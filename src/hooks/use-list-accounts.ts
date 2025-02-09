@@ -49,7 +49,8 @@ export function useListAccounts<
 
     const { mutate, error: unlinkAccountError, mutateAsync: unlinkAccountAsync } = useMutation({
         mutationFn: async (providerId: string) => await authClient.unlinkAccount({
-            providerId
+            providerId,
+            fetchOptions: { throw: true }
         }),
         // When mutate is called:
         onMutate: async (providerId) => {

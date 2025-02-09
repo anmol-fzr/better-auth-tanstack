@@ -56,7 +56,8 @@ export function useListSessions<
 
     const { error: revokeSessionError, mutateAsync: revokeSessionAsync } = useMutation({
         mutationFn: async (token: string) => await authClient.revokeSession({
-            token
+            token,
+            fetchOptions: { throw: true }
         }),
         onMutate: async (token) => {
             if (!optimisticMutate) return
@@ -78,7 +79,7 @@ export function useListSessions<
     })
 
     const { error: revokeSessionsError, mutateAsync: revokeSessionsAsync } = useMutation({
-        mutationFn: async () => await authClient.revokeSessions(),
+        mutationFn: async () => await authClient.revokeSessions({ fetchOptions: { throw: true } }),
         onMutate: async () => {
             if (!optimisticMutate) return
 
@@ -97,7 +98,7 @@ export function useListSessions<
     })
 
     const { error: revokeOtherSessionsError, mutateAsync: revokeOtherSessionsAsync } = useMutation({
-        mutationFn: async () => await authClient.revokeOtherSessions(),
+        mutationFn: async () => await authClient.revokeOtherSessions({ fetchOptions: { throw: true } }),
         onMutate: async (token) => {
             if (!optimisticMutate) return
 
@@ -126,19 +127,17 @@ export function useListSessions<
         }
     }, [revokeSessionAsync])
 
-    const revokeSessions = useCallback(async (): Promise<{ status?: boolean, code?: string, error?: Error }> => {
+    const revokeSessions = useCallback(async (): Promise<{ status?: boolean, error?: Error }> => {
         try {
-            const { data, error } = await revokeSessionsAsync()
-            return { status: data?.status, error: error ? new Error(error.message) : undefined }
+            return await revokeSessionsAsync()
         } catch (error) {
             return { error: error as Error }
         }
     }, [revokeSessionsAsync])
 
-    const revokeOtherSessions = useCallback(async (): Promise<{ status?: boolean, code?: string, error?: Error }> => {
+    const revokeOtherSessions = useCallback(async (): Promise<{ status?: boolean, error?: Error }> => {
         try {
-            const { data, error } = await revokeOtherSessionsAsync()
-            return { status: data?.status, error: error ? new Error(error.message) : undefined }
+            return await revokeOtherSessionsAsync()
         } catch (error) {
             return { error: error as Error }
         }

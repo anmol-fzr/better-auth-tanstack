@@ -4,6 +4,7 @@ import { createAuthClient } from "better-auth/react"
 import { useContext } from "react"
 
 import { useListAccounts } from "../hooks/use-list-accounts"
+import { useListDeviceSessions } from "../hooks/use-list-device-sessions"
 import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 import { useToken } from "../hooks/use-token"
@@ -37,6 +38,9 @@ export function createAuthHooks<
         },
         useListSessions: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
             return useListSessions<TAuthClient>(authClient, options)
+        },
+        useListDeviceSessions: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
+            return useListDeviceSessions<TAuthClient>(authClient, options)
         }
     }
 }
