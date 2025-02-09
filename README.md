@@ -104,7 +104,16 @@ The `useSession` hook is used to fetch the session.
 import { useSession } from "@/hooks/use-auth-hooks"
 
 function MyComponent() {
-    const { data: sessionData, session, user, isPending, refetch, error, updateUser, updateError } = useSession()
+    const { 
+        data: sessionData, 
+        session, 
+        user, 
+        isPending, 
+        refetch, 
+        error, 
+        updateUser, 
+        updateError 
+    } = useSession()
 
     if (isPending) return <div>Loading...</div>
 
