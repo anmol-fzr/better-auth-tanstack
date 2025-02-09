@@ -39,6 +39,10 @@ export function useToken<
     const payload = useMemo(() => data ? decodeJwt(data.token) : null, [data])
 
     useEffect(() => {
+        if (!data) return
+
+        const payload = decodeJwt(data.token)
+
         if (!user) {
             queryClient.removeQueries({ queryKey: tokenKey! })
 
@@ -48,7 +52,7 @@ export function useToken<
         if (user.id !== payload?.sub) {
             refetch()
         }
-    }, [user, payload, refetch, tokenKey, queryClient])
+    }, [user, data, refetch, tokenKey, queryClient])
 
     useEffect(() => {
         if (!data?.token) return
@@ -70,6 +74,7 @@ export function useToken<
     const isTokenExpired = () => {
         if (!data?.token) return true
 
+        const payload = decodeJwt(data.token)
         if (!payload?.exp) return true
 
         const currentTime = Date.now() / 1000
