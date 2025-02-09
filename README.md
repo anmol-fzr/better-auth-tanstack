@@ -2,7 +2,7 @@
 
 Tanstack Query hooks for Better Auth session & JWT token.
 
-More to come soon... (e.g. more SSR prefetches, organization plugin hooks, SWR port, tighter better-auth-ui integration)
+More to come soon... (e.g. more SSR prefetches, organization plugin hooks, multisession plugin, SWR port, tighter better-auth-ui integration)
 
 ## Prerequisites
 
