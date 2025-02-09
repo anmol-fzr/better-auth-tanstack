@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { createAuthClient } from "better-auth/react"
 import { useContext } from "react"
 
+import { useListAccounts } from "../hooks/use-list-accounts"
 import { useSession } from "../hooks/use-session"
 import { useToken } from "../hooks/use-token"
 
@@ -29,6 +30,9 @@ export function createAuthHooks<
         },
         useToken: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
             return useToken<TAuthClient>(authClient, options)
+        },
+        useListAccounts: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
+            return useListAccounts<TAuthClient>(authClient, options)
         }
     }
 }

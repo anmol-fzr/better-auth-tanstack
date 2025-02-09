@@ -19,8 +19,7 @@ export function useSession<
     type Session = TAuthClient["$Infer"]["Session"]["session"]
     type UpdateUser = Partial<Omit<User, "id" | "createdAt" | "updatedAt" | "email" | "emailVerified" | "isAnonymous">>
 
-    const { queryOptions, sessionQueryOptions, sessionKey, optimisticMutate } = useContext(AuthQueryContext)
-    const queryKey = sessionKey!
+    const { queryOptions, sessionQueryOptions, sessionKey: queryKey, optimisticMutate } = useContext(AuthQueryContext)
     const [refetchEnabled, setRefetchEnabled] = useState(false)
 
     const mergedOptions = {
