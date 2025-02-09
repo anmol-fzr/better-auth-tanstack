@@ -11,6 +11,7 @@ export type AuthQueryOptions = {
     tokenKey: string[],
     listAccountsKey: string[],
     listSessionsKey: string[],
+    listDeviceSessionsKey: string[],
     optimisticMutate: boolean
 }
 
@@ -19,6 +20,7 @@ export const defaultAuthQueryOptions: AuthQueryOptions = {
     tokenKey: ["token"],
     listAccountsKey: ["list-accounts"],
     listSessionsKey: ["list-sessions"],
+    listDeviceSessionsKey: ["list-device-sessions"],
     optimisticMutate: true,
 }
 

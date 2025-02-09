@@ -19,7 +19,7 @@ export function useListDeviceSessions<
 
     const queryClient = useQueryClient()
     const { session, refetch: refetchSession } = useSession(authClient)
-    const { queryOptions, listSessionsKey: queryKey, sessionKey, optimisticMutate } = useContext(AuthQueryContext)
+    const { queryOptions, listDeviceSessionsKey: queryKey, sessionKey, optimisticMutate } = useContext(AuthQueryContext)
 
     const mergedOptions = {
         ...queryOptions,
