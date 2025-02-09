@@ -47,7 +47,7 @@ export function useListAccounts<
 
     const { refetch } = queryResult
 
-    const { mutate, error: mutateError, mutateAsync } = useMutation({
+    const { mutate, error: unlinkAccountError, mutateAsync: unlinkAccountAsync } = useMutation({
         mutationFn: async (providerId: string) => await authClient.unlinkAccount({
             providerId
         }),
@@ -94,12 +94,12 @@ export function useListAccounts<
 
     const unlinkAccount = useCallback(async (providerId: string): Promise<{ status?: boolean, code?: string, error?: Error }> => {
         try {
-            const { data, error } = await mutateAsync(providerId)
+            const { data, error } = await unlinkAccountAsync(providerId)
             return { status: data?.status, error: error ? new Error(error.message) : undefined }
         } catch (error) {
             return { error: error as Error }
         }
-    }, [mutateAsync])
+    }, [unlinkAccountAsync])
 
-    return { ...queryResult, accounts: queryResult.data, mutate, mutateAsync, mutateError, unlinkAccount, unlinkError: mutateError }
+    return { ...queryResult, accounts: queryResult.data, unlinkAccount, unlinkAccountError }
 }

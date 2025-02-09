@@ -160,9 +160,9 @@ The `useListAccounts` hook allows you to list and manage user accounts linked to
 import { useListAccounts } from "@/hooks/use-auth-hooks"
 
 function AccountList() {
-  const { accounts, unlinkAccount, unlinkError, isLoading, error } = useListAccounts()
+  const { accounts, unlinkAccount, unlinkAccountError, isPending, error } = useListAccounts()
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>
 
   return (
@@ -192,6 +192,43 @@ unlinkAccount("github")
       console.log("Account unlinked successfully")
     }
   })
+```
+
+## useListSessions
+
+```ts
+import { useListSessions } from "@/hooks/use-auth-hooks"
+
+function SessionList() {
+  const { 
+    sessions, 
+    revokeSession, 
+    revokeSessionError,
+    revokeSessions,
+    revokeSessionsError,
+    revokeOtherSessions,
+    revokeOtherSessionsError,
+    isPending, 
+    error 
+   } = useListSessions()
+
+  if (isPending) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>
+
+  return (
+    <div>
+      <h2>Active Sessions</h2>
+      <ul>
+        {sessions?.map(session => (
+          <li key={session.id}>
+            {session.userAgent}
+            <button onClick={() => revokeSession(session.token)}>Revoke</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
 ```
 
 ### Mutations - updateUser

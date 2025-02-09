@@ -8,8 +8,9 @@ export type AuthQueryOptions = {
     sessionQueryOptions?: Omit<AnyUseQueryOptions, "queryFn" | "queryKey">
     tokenQueryOptions?: Omit<AnyUseQueryOptions, "queryFn" | "queryKey">
     sessionKey: string[]
-    tokenKey: string[]
-    listAccountsKey: string[]
+    tokenKey: string[],
+    listAccountsKey: string[],
+    listSessionsKey: string[],
     optimisticMutate: boolean
 }
 
@@ -17,6 +18,7 @@ export const defaultAuthQueryOptions: AuthQueryOptions = {
     sessionKey: ["session"],
     tokenKey: ["token"],
     listAccountsKey: ["list-accounts"],
+    listSessionsKey: ["list-sessions"],
     optimisticMutate: true,
 }
 
