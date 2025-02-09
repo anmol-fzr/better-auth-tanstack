@@ -159,7 +159,11 @@ export default function SettingsPage() {
         const name = formData.get("name") as string
 
         setDisabled(true)
-        updateUser({ name })
+        updateUser({ name: name }).then(({ error }) => {
+            setDisabled(!error)
+
+            // Show an error Toast
+        })
     }
 
     // useEffect(() => {
@@ -201,7 +205,7 @@ export default function SettingsPage() {
                             onChange={() => setDisabled(false)}
                         />
 
-                        <Button disabled={disabled && !updateError}>
+                        <Button disabled={disabled}>
                             Save
                         </Button>
                     </form>
