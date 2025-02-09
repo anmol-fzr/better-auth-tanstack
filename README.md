@@ -152,7 +152,7 @@ Optimistic example to update user's name with no loaders. Only sends a single HT
 
 Errors can be handled by showing an error Toast or throwing an error to an ErrorBoundary. We also support the Tanstack Query global error configuration:
 
-`queryClient.getQueryCache().config.onError` gets called automatically, so you can set up global error toasts.
+`queryClient.getQueryCache().config.onError` gets called automatically, so you can set up global error toasts. [Tanstack Query Global Error Callbacks](https://tkdodo.eu/blog/react-query-error-handling#the-global-callbacks)
 
 ```tsx
 "use client"
