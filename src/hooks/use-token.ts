@@ -84,7 +84,7 @@ export function useToken<
         return payload.exp < currentTime
     }
 
-    const tokenData = (!user || isTokenExpired() || user?.id !== payload?.sub) ? undefined : data
+    const tokenData = (!user || isTokenExpired() || user?.id != payload?.sub) ? undefined : data
 
     return { ...queryResult, data: tokenData, token: tokenData?.token, payload }
 }

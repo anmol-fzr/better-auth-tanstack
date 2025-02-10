@@ -123,19 +123,7 @@ export function useListDeviceSessions<
                 )
             }
         },
-        onSettled: async (data, error, sessionToken, context) => {
-            const previousData = queryClient.getQueryData(queryKey) as SessionData[] | undefined
-            const newSession = previousData?.find((sessionData) => sessionData.session.token === sessionToken)
-
-            if (newSession) {
-                queryClient.setQueryData(sessionKey, () => newSession)
-            }
-
-            queryClient.setQueryData(tokenKey, null)
-
-            await queryClient.invalidateQueries({ queryKey: sessionKey })
-            queryClient.resetQueries({ predicate: (query) => query.queryKey !== sessionKey })
-        }
+        onSettled: () => queryClient.resetQueries()
     })
 
     const revokeSession = useCallback(async (sessionToken: string): Promise<{ status?: boolean, error?: Error }> => {
