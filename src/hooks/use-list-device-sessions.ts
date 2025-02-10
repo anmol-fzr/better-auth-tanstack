@@ -123,20 +123,18 @@ export function useListDeviceSessions<
                 )
             }
         },
-        onSettled: (data, error, sessionToken, context) => {
-            queryClient.resetQueries()
-            // const previousData = queryClient.getQueryData(queryKey) as SessionData[] | undefined
-            // const newSession = previousData?.find((sessionData) => sessionData.session.token === sessionToken)
+        onSettled: async (data, error, sessionToken, context) => {
+            const previousData = queryClient.getQueryData(queryKey) as SessionData[] | undefined
+            const newSession = previousData?.find((sessionData) => sessionData.session.token === sessionToken)
 
-            // if (newSession) {
-            //     queryClient.setQueryData(sessionKey, () => newSession)
-            // }
+            if (newSession) {
+                queryClient.setQueryData(sessionKey, () => newSession)
+            }
 
-            // queryClient.invalidateQueries({ queryKey: sessionKey })
-            // queryClient.invalidateQueries({ queryKey: tokenKey })
-            // queryClient.invalidateQueries({ queryKey: listAccountsKey })
-            // queryClient.invalidateQueries({ queryKey: listSessionsKey })
-            // queryClient.invalidateQueries({ queryKey })
+            queryClient.setQueryData(tokenKey, null)
+
+            await queryClient.invalidateQueries({ queryKey: sessionKey })
+            queryClient.resetQueries({ predicate: (query) => query.queryKey !== sessionKey })
         }
     })
 
