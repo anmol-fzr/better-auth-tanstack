@@ -85,7 +85,7 @@ export function useListDeviceSessions<
             return { previousData }
         },
         onError: (error, sessionToken, context) => onMutateError(error, context),
-        onSettled: () => !optimisticMutate && refetch()
+        onSettled: () => refetch()
     })
 
     const { error: revokeSessionsError, mutateAsync: revokeSessionsAsync } = useMutation({
@@ -105,7 +105,7 @@ export function useListDeviceSessions<
             return { previousData }
         },
         onError: (error, _, context) => onMutateError(error, context),
-        onSettled: () => !optimisticMutate && refetch()
+        onSettled: () => refetch()
     })
 
     const { error: setActiveSessionError, mutateAsync: setActiveSessionAsync, isPending: setActiveSessionPending } = useMutation({

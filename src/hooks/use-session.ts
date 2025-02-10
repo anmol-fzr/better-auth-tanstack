@@ -89,9 +89,7 @@ export function useSession<
 
             queryClient.setQueryData(queryKey, context.previousSessionData)
         },
-        onSettled: () => {
-            if (!optimisticMutate) refetch()
-        }
+        onSettled: () => refetch()
     })
 
     const updateUser = useCallback(async (variables: UpdateUser): Promise<{ status: boolean, error?: Error }> => {

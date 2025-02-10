@@ -88,9 +88,7 @@ export function useListAccounts<
 
             queryClient.setQueryData(queryKey, context.previousAccounts)
         },
-        onSettled: () => {
-            if (!optimisticMutate) refetch()
-        }
+        onSettled: () => refetch()
     })
 
     const unlinkAccount = useCallback(async (providerId: string): Promise<{ status?: boolean, code?: string, error?: Error }> => {

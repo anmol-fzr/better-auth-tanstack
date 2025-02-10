@@ -75,7 +75,7 @@ export function useListSessions<
             return { previousSessions }
         },
         onError: (error, token, context) => onMutateError(error, context),
-        onSettled: () => !optimisticMutate && refetch()
+        onSettled: () => refetch()
     })
 
     const { error: revokeSessionsError, mutateAsync: revokeSessionsAsync } = useMutation({
@@ -94,7 +94,7 @@ export function useListSessions<
             return { previousSessions }
         },
         onError: (error, _, context) => onMutateError(error, context),
-        onSettled: () => !optimisticMutate && refetch()
+        onSettled: () => refetch()
     })
 
     const { error: revokeOtherSessionsError, mutateAsync: revokeOtherSessionsAsync } = useMutation({
@@ -115,7 +115,7 @@ export function useListSessions<
             return { previousSessions }
         },
         onError: (error, token, context) => onMutateError(error, context),
-        onSettled: () => !optimisticMutate && refetch()
+        onSettled: () => refetch()
     })
 
     const revokeSession = useCallback(async (token: string): Promise<{ status?: boolean, code?: string, error?: Error }> => {
