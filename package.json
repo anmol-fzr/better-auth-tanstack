@@ -1,7 +1,7 @@
 {
     "name": "@daveyplate/better-auth-tanstack",
     "homepage": "https://github.com/daveyplate/better-auth-tanstack",
-    "version": "1.2.22",
+    "version": "1.2.23",
     "description": "Tanstack hooks for better-auth",
     "type": "module",
     "main": "./dist/index.cjs",
