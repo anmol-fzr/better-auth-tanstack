@@ -132,7 +132,7 @@ export function useListDeviceSessions<
             }
 
             queryClient.invalidateQueries({ queryKey: sessionKey })
-            queryClient.resetQueries({ queryKey: tokenKey })
+            queryClient.invalidateQueries({ queryKey: tokenKey })
             queryClient.resetQueries({ queryKey: listAccountsKey })
             queryClient.resetQueries({ queryKey: listSessionsKey })
             queryClient.invalidateQueries({ queryKey })
