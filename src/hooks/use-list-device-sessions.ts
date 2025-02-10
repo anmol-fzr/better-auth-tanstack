@@ -124,14 +124,13 @@ export function useListDeviceSessions<
             }
         },
         onSettled: (data, error, sessionToken, context) => {
-            const previousData = queryClient.getQueryData(queryKey) as SessionData[] | undefined
-            const newSession = previousData?.find((sessionData) => sessionData.session.token === sessionToken)
+            queryClient.resetQueries()
+            // const previousData = queryClient.getQueryData(queryKey) as SessionData[] | undefined
+            // const newSession = previousData?.find((sessionData) => sessionData.session.token === sessionToken)
 
-            if (newSession) {
-                queryClient.setQueryData(sessionKey, () => newSession)
-            }
-
-            queryClient.invalidateQueries()
+            // if (newSession) {
+            //     queryClient.setQueryData(sessionKey, () => newSession)
+            // }
 
             // queryClient.invalidateQueries({ queryKey: sessionKey })
             // queryClient.invalidateQueries({ queryKey: tokenKey })
