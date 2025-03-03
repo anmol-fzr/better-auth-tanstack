@@ -123,7 +123,9 @@ export function useListDeviceSessions<
                 )
             }
         },
-        onSettled: () => queryClient.resetQueries()
+        onSettled: () => {
+            queryClient.clear()
+        }
     })
 
     const revokeSession = useCallback(async (sessionToken: string): Promise<{ status?: boolean, error?: Error }> => {
