@@ -159,6 +159,7 @@ export function useListDeviceSessions<
         revokeSessionsError,
         setActiveSession,
         setActiveSessionPending,
+        activeSessionPending: setActiveSessionPending,
         setActiveSessionError
     }
 }
