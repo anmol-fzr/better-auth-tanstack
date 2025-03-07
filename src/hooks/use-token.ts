@@ -4,12 +4,26 @@ import {
     useQueryClient
 } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
-import { decodeJwt } from "jose"
 import { useContext, useEffect, useMemo } from "react"
 
 import { AuthQueryContext } from "../lib/auth-query-provider"
 
 import { useSession } from "./use-session"
+
+const decodeJwt = (token: string) => {
+    const parts = token
+        .split(".")
+        .map((part) =>
+            Buffer.from(
+                part.replace(/-/g, "+").replace(/_/g, "/"),
+                "base64"
+            ).toString()
+        )
+
+    const payload = JSON.parse(parts[1])
+
+    return payload
+}
 
 export function useToken<
     TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">
