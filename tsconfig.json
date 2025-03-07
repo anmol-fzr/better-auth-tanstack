@@ -9,15 +9,9 @@
         "resolveJsonModule": true,
         "allowJs": true,
         "incremental": false,
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
+        "lib": ["dom", "dom.iterable", "esnext"],
         "module": "esnext",
         "moduleResolution": "node"
     },
-    "include": [
-        "src"
-    ]
+    "include": ["src"]
 }

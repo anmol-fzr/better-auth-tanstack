@@ -1,4 +1,4 @@
-import { type AnyUseQueryOptions, QueryClient } from "@tanstack/react-query"
+import type { AnyUseQueryOptions, QueryClient } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
 
 import type { AuthQueryOptions } from "./auth-query-provider"

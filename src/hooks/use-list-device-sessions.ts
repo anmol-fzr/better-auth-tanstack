@@ -1,8 +1,8 @@
 import { type Query, skipToken } from "@tanstack/query-core"
-import { AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
+import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
-import { createAuthClient } from "better-auth/react"
+import type { createAuthClient } from "better-auth/react"
 import { useCallback, useContext } from "react"
 
 import { AuthQueryContext } from "../lib/auth-query-provider"
@@ -31,31 +31,42 @@ export function useListDeviceSessions<
 
     const mergedOptions = {
         ...queryOptions,
-        ...options,
+        ...options
     }
 
     const queryResult = useQuery<SessionData[]>({
         ...mergedOptions,
         queryKey,
-        queryFn: session ? (async () => {
-            // @ts-expect-error - MultiSession is an optional plugin
-            const data = await authClient.multiSession.listDeviceSessions({
-                fetchOptions: { throw: true }
-            })
+        queryFn: session
+            ? async () => {
+                  // @ts-expect-error - MultiSession is an optional plugin
+                  const data = await authClient.multiSession.listDeviceSessions(
+                      {
+                          fetchOptions: { throw: true }
+                      }
+                  )
 
-            return data
-        }) : skipToken
+                  return data
+              }
+            : skipToken
     })
 
     const { data: deviceSessions, refetch } = queryResult
 
-    const onMutateError = (error: Error, context?: { previousData?: SessionData[] }) => {
+    const onMutateError = (
+        error: Error,
+        context?: { previousData?: SessionData[] }
+    ) => {
         if (error) {
             console.error(error)
-            queryClient.getQueryCache().config.onError?.(
-                error,
-                { queryKey } as unknown as Query<unknown, unknown, unknown, readonly unknown[]>
-            )
+            queryClient
+                .getQueryCache()
+                .config.onError?.(error, { queryKey } as unknown as Query<
+                    unknown,
+                    unknown,
+                    unknown,
+                    readonly unknown[]
+                >)
         }
 
         if (!optimisticMutate || !context?.previousData) return
@@ -63,64 +74,87 @@ export function useListDeviceSessions<
         queryClient.setQueryData(queryKey, context.previousData)
     }
 
-    const { error: revokeSessionError, mutateAsync: revokeSessionAsync } = useMutation({
-        // @ts-expect-error - MultiSession is an optional plugin
-        mutationFn: async (sessionToken: string) => await authClient.multiSession.revoke({
-            sessionToken,
-            fetchOptions: { throw: true }
-        }),
-        onMutate: async (sessionToken) => {
-            if (!optimisticMutate) return
+    const { error: revokeSessionError, mutateAsync: revokeSessionAsync } =
+        useMutation({
+            mutationFn: async (sessionToken: string) =>
+                // @ts-expect-error - MultiSession is an optional plugin
+                await authClient.multiSession.revoke({
+                    sessionToken,
+                    fetchOptions: { throw: true }
+                }),
+            onMutate: async (sessionToken) => {
+                if (!optimisticMutate) return
 
-            await queryClient.cancelQueries({ queryKey })
+                await queryClient.cancelQueries({ queryKey })
 
-            const previousData = queryClient.getQueryData(queryKey) as SessionData[] | undefined
+                const previousData = queryClient.getQueryData(queryKey) as
+                    | SessionData[]
+                    | undefined
 
-            if (previousData) {
-                queryClient.setQueryData(queryKey, () => {
-                    return previousData.filter((sessionData) => sessionData.session.token !== sessionToken)
-                })
-            }
+                if (previousData) {
+                    queryClient.setQueryData(queryKey, () => {
+                        return previousData.filter(
+                            (sessionData) =>
+                                sessionData.session.token !== sessionToken
+                        )
+                    })
+                }
 
-            return { previousData }
-        },
-        onError: (error, sessionToken, context) => onMutateError(error, context),
-        onSettled: () => refetch()
-    })
+                return { previousData }
+            },
+            onError: (error, sessionToken, context) =>
+                onMutateError(error, context),
+            onSettled: () => refetch()
+        })
 
-    const { error: revokeSessionsError, mutateAsync: revokeSessionsAsync } = useMutation({
-        // @ts-expect-error - MultiSession is an optional plugin
-        mutationFn: async () => await authClient.multiSession.revokeAll({ fetchOptions: { throw: true } }),
-        onMutate: async () => {
-            if (!optimisticMutate) return
+    const { error: revokeSessionsError, mutateAsync: revokeSessionsAsync } =
+        useMutation({
+            mutationFn: async () =>
+                // @ts-expect-error - MultiSession is an optional plugin
+                await authClient.multiSession.revokeAll({
+                    fetchOptions: { throw: true }
+                }),
+            onMutate: async () => {
+                if (!optimisticMutate) return
 
-            await queryClient.cancelQueries({ queryKey })
+                await queryClient.cancelQueries({ queryKey })
 
-            const previousData = queryClient.getQueryData(queryKey) as SessionData[] | undefined
+                const previousData = queryClient.getQueryData(queryKey) as
+                    | SessionData[]
+                    | undefined
 
-            if (previousData) {
-                queryClient.setQueryData(queryKey, () => [])
-            }
+                if (previousData) {
+                    queryClient.setQueryData(queryKey, () => [])
+                }
 
-            return { previousData }
-        },
-        onError: (error, _, context) => onMutateError(error, context),
-        onSettled: () => refetch()
-    })
+                return { previousData }
+            },
+            onError: (error, _, context) => onMutateError(error, context),
+            onSettled: () => refetch()
+        })
 
-    const { error: setActiveSessionError, mutateAsync: setActiveSessionAsync, isPending: setActiveSessionPending } = useMutation({
-        // @ts-expect-error - MultiSession is an optional plugin
-        mutationFn: async (sessionToken: string) => await authClient.multiSession.setActive({
-            sessionToken,
-            fetchOptions: { throw: true }
-        }),
+    const {
+        error: setActiveSessionError,
+        mutateAsync: setActiveSessionAsync,
+        isPending: setActiveSessionPending
+    } = useMutation({
+        mutationFn: async (sessionToken: string) =>
+            // @ts-expect-error - MultiSession is an optional plugin
+            await authClient.multiSession.setActive({
+                sessionToken,
+                fetchOptions: { throw: true }
+            }),
         onError: (error, sessionToken, context) => {
             if (error) {
                 console.error(error)
-                queryClient.getQueryCache().config.onError?.(
-                    error,
-                    { queryKey } as unknown as Query<unknown, unknown, unknown, readonly unknown[]>
-                )
+                queryClient
+                    .getQueryCache()
+                    .config.onError?.(error, { queryKey } as unknown as Query<
+                        unknown,
+                        unknown,
+                        unknown,
+                        readonly unknown[]
+                    >)
             }
         },
         onSettled: () => {
@@ -128,15 +162,23 @@ export function useListDeviceSessions<
         }
     })
 
-    const revokeSession = useCallback(async (sessionToken: string): Promise<{ status?: boolean, error?: Error }> => {
-        try {
-            return await revokeSessionAsync(sessionToken)
-        } catch (error) {
-            return { error: error as Error }
-        }
-    }, [revokeSessionAsync])
+    const revokeSession = useCallback(
+        async (
+            sessionToken: string
+        ): Promise<{ status?: boolean; error?: Error }> => {
+            try {
+                return await revokeSessionAsync(sessionToken)
+            } catch (error) {
+                return { error: error as Error }
+            }
+        },
+        [revokeSessionAsync]
+    )
 
-    const revokeSessions = useCallback(async (): Promise<{ status?: boolean, error?: Error }> => {
+    const revokeSessions = useCallback(async (): Promise<{
+        status?: boolean
+        error?: Error
+    }> => {
         try {
             return await revokeSessionsAsync()
         } catch (error) {
@@ -144,13 +186,18 @@ export function useListDeviceSessions<
         }
     }, [revokeSessionsAsync])
 
-    const setActiveSession = useCallback(async (sessionToken: string): Promise<{ status?: boolean, error?: Error }> => {
-        try {
-            return await setActiveSessionAsync(sessionToken)
-        } catch (error) {
-            return { error: error as Error }
-        }
-    }, [setActiveSessionAsync])
+    const setActiveSession = useCallback(
+        async (
+            sessionToken: string
+        ): Promise<{ status?: boolean; error?: Error }> => {
+            try {
+                return await setActiveSessionAsync(sessionToken)
+            } catch (error) {
+                return { error: error as Error }
+            }
+        },
+        [setActiveSessionAsync]
+    )
 
     return {
         ...queryResult,

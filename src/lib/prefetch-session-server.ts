@@ -1,5 +1,5 @@
-import { QueryClient } from "@tanstack/react-query"
-import { betterAuth } from "better-auth"
+import type { QueryClient } from "@tanstack/react-query"
+import type { betterAuth } from "better-auth"
 
 export async function prefetchSession<
     TAuth extends ReturnType<typeof betterAuth>
@@ -13,7 +13,7 @@ export async function prefetchSession<
     type User = TAuth["$Infer"]["Session"]["user"] | undefined
     type Session = TAuth["$Infer"]["Session"]["session"] | undefined
 
-    const data = await auth.api.getSession({ headers }) as SessionData
+    const data = (await auth.api.getSession({ headers })) as SessionData
 
     await queryClient.prefetchQuery({
         queryKey,

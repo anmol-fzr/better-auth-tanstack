@@ -5,20 +5,14 @@ import type { ReactNode } from "react"
 import "./global.css"
 
 const inter = Inter({
-    subsets: ["latin"],
+    subsets: ["latin"]
 })
 
 export default function Layout({ children }: { children: ReactNode }) {
     return (
         <html className={inter.className} lang="en" suppressHydrationWarning>
             <body className="flex flex-col min-h-screen">
-                <RootProvider
-                    search={{
-                        options: {
-                            type: "static",
-                        },
-                    }}
-                >
+                <RootProvider search={{ options: { type: "static" } }}>
                     {children}
                 </RootProvider>
             </body>

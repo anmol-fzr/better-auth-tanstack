@@ -1,8 +1,8 @@
 import { type Query, skipToken } from "@tanstack/query-core"
-import { AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
+import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
-import { createAuthClient } from "better-auth/react"
+import type { createAuthClient } from "better-auth/react"
 import { useCallback, useContext } from "react"
 
 import { AuthQueryContext } from "../lib/auth-query-provider"
@@ -26,32 +26,43 @@ export function useListAccounts<
 ) {
     const queryClient = useQueryClient()
     const { session } = useSession(authClient)
-    const { queryOptions, listAccountsKey: queryKey, optimisticMutate } = useContext(AuthQueryContext)
+    const {
+        queryOptions,
+        listAccountsKey: queryKey,
+        optimisticMutate
+    } = useContext(AuthQueryContext)
 
     const mergedOptions = {
         ...queryOptions,
-        ...options,
+        ...options
     }
 
     const queryResult = useQuery<Account[]>({
         ...mergedOptions,
         queryKey,
-        queryFn: session ? (async () => {
-            const data = await authClient.listAccounts({
-                fetchOptions: { throw: true }
-            })
+        queryFn: session
+            ? async () => {
+                  const data = await authClient.listAccounts({
+                      fetchOptions: { throw: true }
+                  })
 
-            return data
-        }) : skipToken
+                  return data
+              }
+            : skipToken
     })
 
     const { refetch } = queryResult
 
-    const { mutate, error: unlinkAccountError, mutateAsync: unlinkAccountAsync } = useMutation({
-        mutationFn: async (providerId: string) => await authClient.unlinkAccount({
-            providerId,
-            fetchOptions: { throw: true }
-        }),
+    const {
+        mutate,
+        error: unlinkAccountError,
+        mutateAsync: unlinkAccountAsync
+    } = useMutation({
+        mutationFn: async (providerId: string) =>
+            await authClient.unlinkAccount({
+                providerId,
+                fetchOptions: { throw: true }
+            }),
         // When mutate is called:
         onMutate: async (providerId) => {
             if (!optimisticMutate) return
@@ -61,12 +72,16 @@ export function useListAccounts<
             await queryClient.cancelQueries({ queryKey })
 
             // Snapshot the previous value
-            const previousAccounts = queryClient.getQueryData(queryKey) as Account[] | undefined
+            const previousAccounts = queryClient.getQueryData(queryKey) as
+                | Account[]
+                | undefined
 
             if (previousAccounts) {
                 // Optimistically update to the new value
                 queryClient.setQueryData(queryKey, () => {
-                    return previousAccounts.filter(account => account.provider !== providerId)
+                    return previousAccounts.filter(
+                        (account) => account.provider !== providerId
+                    )
                 })
             }
 
@@ -78,10 +93,14 @@ export function useListAccounts<
         onError: (error, providerId, context) => {
             if (error) {
                 console.error(error)
-                queryClient.getQueryCache().config.onError?.(
-                    error,
-                    { queryKey } as unknown as Query<unknown, unknown, unknown, readonly unknown[]>
-                )
+                queryClient
+                    .getQueryCache()
+                    .config.onError?.(error, { queryKey } as unknown as Query<
+                        unknown,
+                        unknown,
+                        unknown,
+                        readonly unknown[]
+                    >)
             }
 
             if (!optimisticMutate || !context?.previousAccounts) return
@@ -91,14 +110,27 @@ export function useListAccounts<
         onSettled: () => refetch()
     })
 
-    const unlinkAccount = useCallback(async (providerId: string): Promise<{ status?: boolean, code?: string, error?: Error }> => {
-        try {
-            const { data, error } = await unlinkAccountAsync(providerId)
-            return { status: data?.status, error: error ? new Error(error.message) : undefined }
-        } catch (error) {
-            return { error: error as Error }
-        }
-    }, [unlinkAccountAsync])
+    const unlinkAccount = useCallback(
+        async (
+            providerId: string
+        ): Promise<{ status?: boolean; code?: string; error?: Error }> => {
+            try {
+                const { data, error } = await unlinkAccountAsync(providerId)
+                return {
+                    status: data?.status,
+                    error: error ? new Error(error.message) : undefined
+                }
+            } catch (error) {
+                return { error: error as Error }
+            }
+        },
+        [unlinkAccountAsync]
+    )
 
-    return { ...queryResult, accounts: queryResult.data, unlinkAccount, unlinkAccountError }
+    return {
+        ...queryResult,
+        accounts: queryResult.data,
+        unlinkAccount,
+        unlinkAccountError
+    }
 }

@@ -1,6 +1,6 @@
 import type { AnyUseQueryOptions } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
-import { createAuthClient } from "better-auth/react"
+import type { createAuthClient } from "better-auth/react"
 import { useContext } from "react"
 
 import { useListAccounts } from "../hooks/use-list-accounts"
@@ -14,32 +14,47 @@ import { prefetchSession } from "./prefetch-session"
 
 export function createAuthHooks<
     TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">
->(
-    authClient: TAuthClient
-) {
+>(authClient: TAuthClient) {
     return {
-        useSession: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
+        useSession: (
+            options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
+        ) => {
             return useSession<TAuthClient>(authClient, options)
         },
-        usePrefetchSession: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
+        usePrefetchSession: (
+            options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
+        ) => {
             const queryClient = useQueryClient()
             const queryOptions = useContext(AuthQueryContext)
             return {
                 prefetch: () => {
-                    return prefetchSession<TAuthClient>(authClient, queryClient, queryOptions, options)
+                    return prefetchSession<TAuthClient>(
+                        authClient,
+                        queryClient,
+                        queryOptions,
+                        options
+                    )
                 }
             }
         },
-        useToken: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
+        useToken: (
+            options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
+        ) => {
             return useToken<TAuthClient>(authClient, options)
         },
-        useListAccounts: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
+        useListAccounts: (
+            options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
+        ) => {
             return useListAccounts<TAuthClient>(authClient, options)
         },
-        useListSessions: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
+        useListSessions: (
+            options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
+        ) => {
             return useListSessions<TAuthClient>(authClient, options)
         },
-        useListDeviceSessions: (options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">) => {
+        useListDeviceSessions: (
+            options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
+        ) => {
             return useListDeviceSessions<TAuthClient>(authClient, options)
         }
     }

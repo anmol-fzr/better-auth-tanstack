@@ -10,6 +10,6 @@ export default defineConfig((env) => {
         splitting: true,
         cjsInterop: true,
         skipNodeModulesBundle: true,
-        treeshake: true,
+        treeshake: true
     }
 })

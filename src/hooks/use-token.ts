@@ -1,4 +1,8 @@
-import { AnyUseQueryOptions, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+    type AnyUseQueryOptions,
+    useQuery,
+    useQueryClient
+} from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
 import { decodeJwt } from "jose"
 import { useContext, useEffect, useMemo } from "react"
@@ -14,13 +18,14 @@ export function useToken<
     options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
 ) {
     const queryClient = useQueryClient()
-    const { tokenKey, tokenQueryOptions, queryOptions } = useContext(AuthQueryContext)
+    const { tokenKey, tokenQueryOptions, queryOptions } =
+        useContext(AuthQueryContext)
     const { user } = useSession(authClient, options)
 
     const mergedOptions = {
         ...queryOptions,
         ...tokenQueryOptions,
-        ...options,
+        ...options
     }
 
     const queryResult = useQuery<{ token: string } | null>({
@@ -30,11 +35,11 @@ export function useToken<
         queryKey: tokenKey!,
         queryFn: async () => {
             return await authClient.$fetch("/token", { throw: true })
-        },
+        }
     })
 
     const { data, refetch } = queryResult
-    const payload = useMemo(() => data ? decodeJwt(data.token) : null, [data])
+    const payload = useMemo(() => (data ? decodeJwt(data.token) : null), [data])
 
     // useEffect(() => {
     //     if (!data) return
@@ -53,7 +58,6 @@ export function useToken<
     //         console.log("User ID mismatch, refetching token", user, payload)
     //         queryClient.invalidateQueries({ queryKey: tokenKey! })
     //     }
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, [JSON.stringify(user), JSON.stringify(data)])
 
     useEffect(() => {
@@ -71,7 +75,7 @@ export function useToken<
         }, timeoutDuration)
 
         return () => clearTimeout(timeoutId)
-    }, [data, refetch, queryClient])
+    }, [data, refetch])
 
     const isTokenExpired = () => {
         if (!data?.token) return true
@@ -84,7 +88,10 @@ export function useToken<
         return payload.exp < currentTime
     }
 
-    const tokenData = (!user || isTokenExpired() || user?.id != payload?.sub) ? undefined : data
+    const tokenData =
+        !user || isTokenExpired() || user?.id !== payload?.sub
+            ? undefined
+            : data
 
     return { ...queryResult, data: tokenData, token: tokenData?.token, payload }
 }

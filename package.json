@@ -3,6 +3,11 @@
     "homepage": "https://github.com/daveyplate/better-auth-tanstack",
     "version": "1.2.27",
     "description": "Tanstack hooks for better-auth",
+    "scripts": {
+        "build": "tsup --clean --dts",
+        "dev": "tsc-watch --onSuccess 'biome check'",
+        "prepublishOnly": "rm -rf dist && tsup --clean --dts"
+    },
     "type": "module",
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
@@ -28,15 +33,7 @@
             }
         }
     },
-    "files": [
-        "src",
-        "dist"
-    ],
-    "scripts": {
-        "build": "tsup --clean --dts",
-        "dev": "tsc-watch --onSuccess \"npx eslint\"",
-        "prepublishOnly": "rm -rf dist && tsup --clean --dts"
-    },
+    "files": ["src", "dist"],
     "keywords": [
         "better-auth",
         "tanstack",
@@ -52,22 +49,16 @@
     "author": "daveycodez",
     "license": "MIT",
     "devDependencies": {
-        "@eslint/eslintrc": "^3.2.0",
-        "@stylistic/eslint-plugin": "^3.1.0",
-        "@types/node": "^22.13.4",
+        "@biomejs/biome": "1.9.4",
+        "@types/node": "^22.13.9",
         "@types/react": "^19.0.10",
         "@types/react-dom": "^19.0.4",
-        "axios": "^1.8.1",
-        "eslint": "^9.20.1",
-        "eslint-config-next": "15.1.7",
-        "eslint-plugin-import": "^2.31.0",
-        "eslint-plugin-import-newlines": "^1.4.0",
-        "next": "^15.1.7",
+        "next": "^15.2.1",
         "tsc-watch": "^6.2.1",
-        "tsup": "^8.3.6",
-        "tsx": "^4.19.2",
-        "turbo": "^2.4.2",
-        "typescript": "^5.7.3"
+        "tsup": "^8.4.0",
+        "tsx": "^4.19.3",
+        "turbo": "^2.4.4",
+        "typescript": "^5.8.2"
     },
     "peerDependencies": {
         "@tanstack/query-core": ">=5.65.0",
