@@ -11,10 +11,6 @@ export async function prefetchSession<
     queryOptions?: AuthQueryOptions,
     options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
 ) {
-    type SessionData = TAuthClient["$Infer"]["Session"] | null
-    type User = TAuthClient["$Infer"]["Session"]["user"] | undefined
-    type Session = TAuthClient["$Infer"]["Session"]["session"] | undefined
-
     const { error, data } = await authClient.getSession()
 
     const mergedOptions = {
@@ -28,6 +24,10 @@ export async function prefetchSession<
         queryKey: queryOptions?.sessionKey ?? ["session"],
         queryFn: () => data as SessionData
     })
+
+    type SessionData = TAuthClient["$Infer"]["Session"] | undefined
+    type User = TAuthClient["$Infer"]["Session"]["user"] | undefined
+    type Session = TAuthClient["$Infer"]["Session"]["session"] | undefined
 
     return {
         error,

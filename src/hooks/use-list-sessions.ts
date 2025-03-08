@@ -7,6 +7,7 @@ import { useCallback, useContext } from "react"
 
 import { AuthQueryContext } from "../lib/auth-query-provider"
 
+import type { FetchError } from "../types/fetch-error"
 import { useSession } from "./use-session"
 
 export function useListSessions<
@@ -22,7 +23,7 @@ export function useListSessions<
     const {
         queryOptions,
         listSessionsKey: queryKey,
-        optimisticMutate
+        optimistic
     } = useContext(AuthQueryContext)
 
     const mergedOptions = {
@@ -56,13 +57,11 @@ export function useListSessions<
                 .getQueryCache()
                 .config.onError?.(error, { queryKey } as unknown as Query<
                     unknown,
-                    unknown,
-                    unknown,
-                    readonly unknown[]
+                    unknown
                 >)
         }
 
-        if (!optimisticMutate || !context?.previousSessions) return
+        if (!optimistic || !context?.previousSessions) return
 
         queryClient.setQueryData(queryKey, context.previousSessions)
     }
@@ -75,25 +74,24 @@ export function useListSessions<
                     fetchOptions: { throw: true }
                 }),
             onMutate: async (token) => {
-                if (!optimisticMutate) return
-
+                if (!optimistic) return
                 await queryClient.cancelQueries({ queryKey })
 
-                const previousSessions = queryClient.getQueryData(queryKey) as
-                    | Session[]
-                    | undefined
+                const previousSessions = queryClient.getQueryData(
+                    queryKey
+                ) as Session[]
 
-                if (previousSessions) {
-                    queryClient.setQueryData(queryKey, () => {
-                        return previousSessions.filter(
-                            (session) => session.token !== token
-                        )
-                    })
-                }
+                if (!previousSessions) return
+
+                queryClient.setQueryData(queryKey, () => {
+                    return previousSessions.filter(
+                        (session) => session.token !== token
+                    )
+                })
 
                 return { previousSessions }
             },
-            onError: (error, token, context) => onMutateError(error, context),
+            onError: (error, _, context) => onMutateError(error, context),
             onSettled: () => refetch()
         })
 
@@ -104,18 +102,16 @@ export function useListSessions<
                     fetchOptions: { throw: true }
                 }),
             onMutate: async () => {
-                if (!optimisticMutate) return
-
+                if (!optimistic) return
                 await queryClient.cancelQueries({ queryKey })
 
-                const previousSessions = queryClient.getQueryData(queryKey) as
-                    | Session[]
-                    | undefined
+                const previousSessions = queryClient.getQueryData(
+                    queryKey
+                ) as Session[]
 
-                if (previousSessions) {
-                    queryClient.setQueryData(queryKey, () => [])
-                }
+                if (!previousSessions) return
 
+                queryClient.setQueryData(queryKey, () => [])
                 return { previousSessions }
             },
             onError: (error, _, context) => onMutateError(error, context),
@@ -131,65 +127,53 @@ export function useListSessions<
                 fetchOptions: { throw: true }
             }),
         onMutate: async (token) => {
-            if (!optimisticMutate) return
+            if (!optimistic) return
 
             await queryClient.cancelQueries({ queryKey })
 
-            const previousSessions = queryClient.getQueryData(queryKey) as
-                | Session[]
-                | undefined
+            const previousSessions = queryClient.getQueryData(
+                queryKey
+            ) as Session[]
 
-            if (previousSessions) {
-                queryClient.setQueryData(queryKey, () => {
-                    return previousSessions.filter(
-                        (previousSession) =>
-                            session?.token !== previousSession.token
-                    )
-                })
-            }
+            if (!previousSessions) return
+
+            queryClient.setQueryData(queryKey, () => {
+                return previousSessions.filter(
+                    (previousSession) =>
+                        session?.token !== previousSession.token
+                )
+            })
 
             return { previousSessions }
         },
-        onError: (error, token, context) => onMutateError(error, context),
+        onError: (error, _, context) => onMutateError(error, context),
         onSettled: () => refetch()
     })
 
     const revokeSession = useCallback(
-        async (
-            token: string
-        ): Promise<{ status?: boolean; code?: string; error?: Error }> => {
+        async (token: string) => {
             try {
-                const { data, error } = await revokeSessionAsync(token)
-                return {
-                    status: data?.status,
-                    error: error ? new Error(error.message) : undefined
-                }
+                return await revokeSessionAsync(token)
             } catch (error) {
-                return { error: error as Error }
+                return { error: error as FetchError }
             }
         },
         [revokeSessionAsync]
     )
 
-    const revokeSessions = useCallback(async (): Promise<{
-        status?: boolean
-        error?: Error
-    }> => {
+    const revokeSessions = useCallback(async () => {
         try {
             return await revokeSessionsAsync()
         } catch (error) {
-            return { error: error as Error }
+            return { error: error as FetchError }
         }
     }, [revokeSessionsAsync])
 
-    const revokeOtherSessions = useCallback(async (): Promise<{
-        status?: boolean
-        error?: Error
-    }> => {
+    const revokeOtherSessions = useCallback(async () => {
         try {
             return await revokeOtherSessionsAsync()
         } catch (error) {
-            return { error: error as Error }
+            return { error: error as FetchError }
         }
     }, [revokeOtherSessionsAsync])
 

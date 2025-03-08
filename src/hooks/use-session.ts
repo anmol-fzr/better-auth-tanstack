@@ -37,7 +37,7 @@ export function useSession<
         queryOptions,
         sessionQueryOptions,
         sessionKey: queryKey,
-        optimisticMutate
+        optimistic
     } = useContext(AuthQueryContext)
     const [refetchEnabled, setRefetchEnabled] = useState(false)
 
@@ -74,7 +74,7 @@ export function useSession<
             }),
         // When mutate is called:
         onMutate: async (variables) => {
-            if (!optimisticMutate) return
+            if (!optimistic) return
 
             // Cancel any outgoing refetches
             // (so they don't overwrite our optimistic update)
@@ -116,7 +116,7 @@ export function useSession<
                     >)
             }
 
-            if (!optimisticMutate || !context?.previousSessionData) return
+            if (!optimistic || !context?.previousSessionData) return
 
             queryClient.setQueryData(queryKey, context.previousSessionData)
         },

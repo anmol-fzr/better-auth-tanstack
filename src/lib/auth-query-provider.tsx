@@ -12,7 +12,8 @@ export type AuthQueryOptions = {
     listAccountsKey: string[]
     listSessionsKey: string[]
     listDeviceSessionsKey: string[]
-    optimisticMutate: boolean
+    listPasskeysKey: string[]
+    optimistic: boolean
 }
 
 export const defaultAuthQueryOptions: AuthQueryOptions = {
@@ -21,7 +22,8 @@ export const defaultAuthQueryOptions: AuthQueryOptions = {
     listAccountsKey: ["list-accounts"],
     listSessionsKey: ["list-sessions"],
     listDeviceSessionsKey: ["list-device-sessions"],
-    optimisticMutate: true
+    listPasskeysKey: ["list-passkeys"],
+    optimistic: true
 }
 
 export const AuthQueryContext = createContext<AuthQueryOptions>(

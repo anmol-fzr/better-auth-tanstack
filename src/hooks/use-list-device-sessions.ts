@@ -7,6 +7,7 @@ import { useCallback, useContext } from "react"
 
 import { AuthQueryContext } from "../lib/auth-query-provider"
 
+import type { FetchError } from "../types/fetch-error"
 import { useSession } from "./use-session"
 
 export function useListDeviceSessions<
@@ -16,38 +17,28 @@ export function useListDeviceSessions<
     options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
+    type User = TAuthClient["$Infer"]["Session"]["user"]
+    type Session = TAuthClient["$Infer"]["Session"]["session"]
 
     const queryClient = useQueryClient()
-    const { session, refetch: refetchSession } = useSession(authClient)
+    const { session } = useSession(authClient)
     const {
         queryOptions,
         listDeviceSessionsKey: queryKey,
-        sessionKey,
-        tokenKey,
-        listAccountsKey,
-        listSessionsKey,
-        optimisticMutate
+        optimistic
     } = useContext(AuthQueryContext)
 
-    const mergedOptions = {
-        ...queryOptions,
-        ...options
-    }
+    const mergedOptions = { ...queryOptions, ...options }
 
     const queryResult = useQuery<SessionData[]>({
         ...mergedOptions,
         queryKey,
         queryFn: session
-            ? async () => {
+            ? async () =>
                   // @ts-expect-error - MultiSession is an optional plugin
-                  const data = await authClient.multiSession.listDeviceSessions(
-                      {
-                          fetchOptions: { throw: true }
-                      }
-                  )
-
-                  return data
-              }
+                  await authClient.multiSession.listDeviceSessions({
+                      fetchOptions: { throw: true }
+                  })
             : skipToken
     })
 
@@ -63,13 +54,11 @@ export function useListDeviceSessions<
                 .getQueryCache()
                 .config.onError?.(error, { queryKey } as unknown as Query<
                     unknown,
-                    unknown,
-                    unknown,
-                    readonly unknown[]
+                    unknown
                 >)
         }
 
-        if (!optimisticMutate || !context?.previousData) return
+        if (!optimistic || !context?.previousData) return
 
         queryClient.setQueryData(queryKey, context.previousData)
     }
@@ -83,22 +72,22 @@ export function useListDeviceSessions<
                     fetchOptions: { throw: true }
                 }),
             onMutate: async (sessionToken) => {
-                if (!optimisticMutate) return
+                if (!optimistic) return
 
                 await queryClient.cancelQueries({ queryKey })
 
-                const previousData = queryClient.getQueryData(queryKey) as
-                    | SessionData[]
-                    | undefined
+                const previousData = queryClient.getQueryData(
+                    queryKey
+                ) as SessionData[]
 
-                if (previousData) {
-                    queryClient.setQueryData(queryKey, () => {
-                        return previousData.filter(
-                            (sessionData) =>
-                                sessionData.session.token !== sessionToken
-                        )
-                    })
-                }
+                if (!previousData) return
+
+                queryClient.setQueryData(queryKey, () => {
+                    return previousData.filter(
+                        (sessionData) =>
+                            sessionData.session.token !== sessionToken
+                    )
+                })
 
                 return { previousData }
             },
@@ -115,18 +104,17 @@ export function useListDeviceSessions<
                     fetchOptions: { throw: true }
                 }),
             onMutate: async () => {
-                if (!optimisticMutate) return
+                if (!optimistic) return
 
                 await queryClient.cancelQueries({ queryKey })
 
-                const previousData = queryClient.getQueryData(queryKey) as
-                    | SessionData[]
-                    | undefined
+                const previousData = queryClient.getQueryData(
+                    queryKey
+                ) as SessionData[]
 
-                if (previousData) {
-                    queryClient.setQueryData(queryKey, () => [])
-                }
+                if (!previousData) return
 
+                queryClient.setQueryData(queryKey, () => [])
                 return { previousData }
             },
             onError: (error, _, context) => onMutateError(error, context),
@@ -144,56 +132,48 @@ export function useListDeviceSessions<
                 sessionToken,
                 fetchOptions: { throw: true }
             }),
-        onError: (error, sessionToken, context) => {
-            if (error) {
-                console.error(error)
-                queryClient
-                    .getQueryCache()
-                    .config.onError?.(error, { queryKey } as unknown as Query<
-                        unknown,
-                        unknown,
-                        unknown,
-                        readonly unknown[]
-                    >)
-            }
-        },
-        onSettled: () => {
-            queryClient.clear()
-        }
+        onError: (error) => onMutateError(error),
+        onSettled: () => queryClient.clear()
     })
 
     const revokeSession = useCallback(
         async (
             sessionToken: string
-        ): Promise<{ status?: boolean; error?: Error }> => {
+        ): Promise<{
+            data?: { status: boolean }
+            error?: FetchError
+        }> => {
             try {
                 return await revokeSessionAsync(sessionToken)
             } catch (error) {
-                return { error: error as Error }
+                return { error: error as FetchError }
             }
         },
         [revokeSessionAsync]
     )
 
     const revokeSessions = useCallback(async (): Promise<{
-        status?: boolean
-        error?: Error
+        data?: { status: boolean }
+        error?: FetchError
     }> => {
         try {
             return await revokeSessionsAsync()
         } catch (error) {
-            return { error: error as Error }
+            return { error: error as FetchError }
         }
     }, [revokeSessionsAsync])
 
     const setActiveSession = useCallback(
         async (
             sessionToken: string
-        ): Promise<{ status?: boolean; error?: Error }> => {
+        ): Promise<{
+            data?: { session: Session; user: User }
+            error?: FetchError
+        }> => {
             try {
                 return await setActiveSessionAsync(sessionToken)
             } catch (error) {
-                return { error: error as Error }
+                return { error: error as FetchError }
             }
         },
         [setActiveSessionAsync]

@@ -6,20 +6,23 @@ import type { createAuthClient } from "better-auth/react"
 import { useCallback, useContext } from "react"
 
 import { AuthQueryContext } from "../lib/auth-query-provider"
-
 import type { FetchError } from "../types/fetch-error"
 import { useSession } from "./use-session"
 
-type Account = {
+type Passkey = {
     id: string
-    provider: string
+    name?: string
+    publicKey: string
+    userId: string
+    credentialID: string
+    counter: number
+    deviceType: string
+    backedUp: boolean
+    transports?: string
     createdAt: Date
-    updatedAt: Date
-    accountId: string
-    scopes: string[]
 }
 
-export function useListAccounts<
+export function useListPasskeys<
     TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">
 >(
     authClient: TAuthClient,
@@ -29,18 +32,19 @@ export function useListAccounts<
     const { session } = useSession(authClient)
     const {
         queryOptions,
-        listAccountsKey: queryKey,
+        listPasskeysKey: queryKey,
         optimistic
     } = useContext(AuthQueryContext)
 
     const mergedOptions = { ...queryOptions, ...options }
 
-    const queryResult = useQuery<Account[]>({
+    const queryResult = useQuery<Passkey[]>({
         ...mergedOptions,
         queryKey,
         queryFn: session
             ? async () =>
-                  await authClient.listAccounts({
+                  // @ts-expect-error - This is a private API
+                  await authClient.passkey.listUserPasskeys({
                       fetchOptions: { throw: true }
                   })
             : skipToken
@@ -48,36 +52,33 @@ export function useListAccounts<
 
     const { refetch } = queryResult
 
-    const { error: unlinkAccountError, mutateAsync: unlinkAccountAsync } =
+    const { error: deletePasskeyError, mutateAsync: deletePasskeyAsync } =
         useMutation({
-            mutationFn: async (providerId: string) =>
-                await authClient.unlinkAccount({
-                    providerId,
+            mutationFn: async (id: string) =>
+                // @ts-expect-error - Optional plugin
+                await authClient.passkey.deletePasskey({
+                    id,
                     fetchOptions: { throw: true }
                 }),
-            onMutate: async (providerId) => {
+            onMutate: async (id) => {
                 if (!optimistic) return
                 await queryClient.cancelQueries({ queryKey })
 
-                const previousAccounts = queryClient.getQueryData(
+                const previousPasskeys = queryClient.getQueryData(
                     queryKey
-                ) as Account[]
+                ) as Passkey[]
 
-                if (!previousAccounts) return
+                if (!previousPasskeys) return
 
-                queryClient.setQueryData(
-                    queryKey,
-                    previousAccounts.filter(
-                        (account) => account.provider !== providerId
+                queryClient.setQueryData(queryKey, () => {
+                    return previousPasskeys.filter(
+                        (passkey) => passkey.id !== id
                     )
-                )
+                })
 
-                // Return a context object with the snapshotted value
-                return { previousAccounts }
+                return { previousPasskeys }
             },
-            // If the mutation fails,
-            // use the context returned from onMutate to roll back
-            onError: (error, providerId, context) => {
+            onError: (error, id, context) => {
                 if (error) {
                     console.error(error)
                     queryClient.getQueryCache().config.onError?.(error, {
@@ -85,28 +86,33 @@ export function useListAccounts<
                     } as unknown as Query<unknown, unknown>)
                 }
 
-                if (!optimistic || !context?.previousAccounts) return
+                if (!optimistic || !context?.previousPasskeys) return
 
-                queryClient.setQueryData(queryKey, context.previousAccounts)
+                queryClient.setQueryData(queryKey, context.previousPasskeys)
             },
             onSettled: () => refetch()
         })
 
-    const unlinkAccount = useCallback(
-        async (providerId: string) => {
+    const deletePasskey = useCallback(
+        async (
+            id: string
+        ): Promise<{
+            data?: { status: boolean }
+            error?: FetchError
+        }> => {
             try {
-                return await unlinkAccountAsync(providerId)
+                return await deletePasskeyAsync(id)
             } catch (error) {
-                return { error: error as FetchError }
+                return { error: error as Error }
             }
         },
-        [unlinkAccountAsync]
+        [deletePasskeyAsync]
     )
 
     return {
         ...queryResult,
-        accounts: queryResult.data,
-        unlinkAccount,
-        unlinkAccountError
+        passkeys: queryResult.data,
+        deletePasskey,
+        deletePasskeyError
     }
 }
