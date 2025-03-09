@@ -5,9 +5,9 @@ import { useQueryClient } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
 import { useCallback, useContext } from "react"
 
-import { AuthQueryContext } from "../lib/auth-query-provider"
-import type { FetchError } from "../types/fetch-error"
-import { useSession } from "./use-session"
+import { AuthQueryContext } from "../../lib/auth-query-provider"
+import type { FetchError } from "../../types/fetch-error"
+import { useSession } from "../session/use-session"
 
 type Passkey = {
     id: string

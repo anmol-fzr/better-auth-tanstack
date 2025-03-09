@@ -2,7 +2,7 @@ import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
 import { useContext, useEffect, useState } from "react"
 
-import { AuthQueryContext } from "../lib/auth-query-provider"
+import { AuthQueryContext } from "../../lib/auth-query-provider"
 import { useUpdateUser } from "./use-update-user"
 
 export function useSession<

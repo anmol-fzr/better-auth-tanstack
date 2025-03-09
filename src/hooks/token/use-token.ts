@@ -6,9 +6,9 @@ import {
 import type { createAuthClient } from "better-auth/react"
 import { useContext, useEffect, useMemo } from "react"
 
-import { AuthQueryContext } from "../lib/auth-query-provider"
+import { AuthQueryContext } from "../../lib/auth-query-provider"
 
-import { useSession } from "./use-session"
+import { useSession } from "../session/use-session"
 
 const decodeJwt = (token: string) => {
     const parts = token

@@ -5,10 +5,10 @@ import { useQueryClient } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
 import { useCallback, useContext } from "react"
 
-import { AuthQueryContext } from "../lib/auth-query-provider"
+import { AuthQueryContext } from "../../lib/auth-query-provider"
 
-import type { FetchError } from "../types/fetch-error"
-import { useSession } from "./use-session"
+import type { FetchError } from "../../types/fetch-error"
+import { useSession } from "../session/use-session"
 
 export function useListDeviceSessions<
     TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">

@@ -1,6 +1,6 @@
 import { type Query, useQueryClient } from "@tanstack/react-query"
 import { useContext } from "react"
-import { AuthQueryContext } from "./auth-query-provider"
+import { AuthQueryContext } from "../../lib/auth-query-provider"
 
 export const useOnMutateError = () => {
     const queryClient = useQueryClient()
