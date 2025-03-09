@@ -1,14 +1,9 @@
-import type { Query } from "@tanstack/query-core"
-import {
-    type AnyUseQueryOptions,
-    useQuery,
-    useQueryClient
-} from "@tanstack/react-query"
-import { useMutation } from "@tanstack/react-query"
+import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
 import type { createAuthClient } from "better-auth/react"
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 
 import { AuthQueryContext } from "../lib/auth-query-provider"
+import { useUpdateUser } from "./use-update-user"
 
 export function useSession<
     TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">
@@ -16,28 +11,14 @@ export function useSession<
     authClient: TAuthClient,
     options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
 ) {
-    const queryClient = useQueryClient()
-
     type SessionData = TAuthClient["$Infer"]["Session"]
     type User = TAuthClient["$Infer"]["Session"]["user"]
     type Session = TAuthClient["$Infer"]["Session"]["session"]
-    type UpdateUser = Partial<
-        Omit<
-            User,
-            | "id"
-            | "createdAt"
-            | "updatedAt"
-            | "email"
-            | "emailVerified"
-            | "isAnonymous"
-        >
-    >
 
     const {
         queryOptions,
         sessionQueryOptions,
-        sessionKey: queryKey,
-        optimistic
+        sessionKey: queryKey
     } = useContext(AuthQueryContext)
     const [refetchEnabled, setRefetchEnabled] = useState(false)
 
@@ -62,79 +43,8 @@ export function useSession<
         }
     })
 
-    const {
-        mutate,
-        error: mutateError,
-        mutateAsync
-    } = useMutation({
-        mutationFn: async (variables: UpdateUser) =>
-            await authClient.updateUser({
-                ...variables,
-                fetchOptions: { throw: true }
-            }),
-        // When mutate is called:
-        onMutate: async (variables) => {
-            if (!optimistic) return
-
-            // Cancel any outgoing refetches
-            // (so they don't overwrite our optimistic update)
-            await queryClient.cancelQueries({ queryKey })
-
-            // Snapshot the previous value
-            const previousSessionData = queryClient.getQueryData(queryKey) as
-                | SessionData
-                | undefined
-
-            if (previousSessionData) {
-                // Optimistically update to the new value
-                queryClient.setQueryData(queryKey, () => {
-                    return {
-                        ...previousSessionData,
-                        user: {
-                            ...previousSessionData?.user,
-                            ...variables
-                        }
-                    }
-                })
-            }
-
-            // Return a context object with the snapshotted value
-            return { previousSessionData }
-        },
-        // If the mutation fails,
-        // use the context returned from onMutate to roll back
-        onError: (error, variables, context) => {
-            if (error) {
-                console.error(error)
-                queryClient
-                    .getQueryCache()
-                    .config.onError?.(error, { queryKey } as unknown as Query<
-                        unknown,
-                        unknown,
-                        unknown,
-                        readonly unknown[]
-                    >)
-            }
-
-            if (!optimistic || !context?.previousSessionData) return
-
-            queryClient.setQueryData(queryKey, context.previousSessionData)
-        },
-        onSettled: () => refetch()
-    })
-
-    const updateUser = useCallback(
-        async (
-            variables: UpdateUser
-        ): Promise<{ status: boolean; error?: Error }> => {
-            try {
-                return await mutateAsync(variables)
-            } catch (error) {
-                return { status: false, error: error as Error }
-            }
-        },
-        [mutateAsync]
-    )
+    const { updateUser, updateUserAsync, updateUserError, updateUserPending } =
+        useUpdateUser(authClient)
 
     const { data, refetch } = queryResult
 
@@ -163,9 +73,7 @@ export function useSession<
         return expiresAt < now
     }
 
-    const sessionData: SessionData | undefined = isSessionExpired()
-        ? undefined
-        : data
+    const sessionData = isSessionExpired() ? undefined : data
     const session = sessionData?.session as Session | undefined
     const user = sessionData?.user as User | undefined
 
@@ -174,10 +82,9 @@ export function useSession<
         data: sessionData,
         session,
         user,
-        mutate,
-        mutateAsync,
-        mutateError,
         updateUser,
-        updateError: mutateError
+        updateUserAsync,
+        updateUserPending,
+        updateUserError
     }
 }

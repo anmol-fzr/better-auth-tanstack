@@ -9,6 +9,7 @@ import { useListSessions } from "../hooks/use-list-sessions"
 import { useSession } from "../hooks/use-session"
 import { useToken } from "../hooks/use-token"
 
+import { useUpdateUser } from "../hooks/use-update-user"
 import { AuthQueryContext } from "./auth-query-provider"
 import { prefetchSession } from "./prefetch-session"
 
@@ -20,6 +21,9 @@ export function createAuthHooks<
             options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
         ) => {
             return useSession<TAuthClient>(authClient, options)
+        },
+        useUpdateUser: () => {
+            return useUpdateUser<TAuthClient>(authClient)
         },
         usePrefetchSession: (
             options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
