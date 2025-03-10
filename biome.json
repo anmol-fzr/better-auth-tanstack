@@ -7,7 +7,7 @@
         "defaultBranch": "main"
     },
     "files": {
-        "ignore": ["**/*.css", "src/components/ui"]
+        "ignore": ["src/components/ui"]
     },
     "formatter": {
         "indentStyle": "space",
@@ -17,7 +17,8 @@
     "linter": {
         "rules": {
             "a11y": {
-                "noSvgWithoutTitle": "off"
+                "noSvgWithoutTitle": "off",
+                "useGenericFontNames": "off"
             },
             "suspicious": {
                 "noArrayIndexKey": "off",
