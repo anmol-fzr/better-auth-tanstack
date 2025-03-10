@@ -61,7 +61,7 @@ export function useUpdateUser<TAuthClient extends AuthClient>(
     async function updateUserAsync(
         params: UpdateUserParams
     ): Promise<ThrowableResult | NonThrowableResult> {
-        return (await mutateAsync(params)) as ThrowableResult | NonThrowableResult
+        return await mutateAsync(params)
     }
 
     return {

@@ -39,7 +39,7 @@ export function useSession<TAuthClient extends AuthClient>(
         const expiresAt = new Date(data.session.expiresAt).getTime()
         const expiresIn = expiresAt - Date.now()
 
-        const timeout = setTimeout(() => refetch(), expiresIn - 10000)
+        const timeout = setTimeout(() => refetch(), expiresIn)
 
         return () => clearTimeout(timeout)
     }, [data, refetch])
