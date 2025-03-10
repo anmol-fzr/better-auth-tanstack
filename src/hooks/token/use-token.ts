@@ -27,10 +27,10 @@ export function useToken<TAuthClient extends AuthClient>(
 
     const queryResult = useQuery<{ token: string } | null>({
         staleTime: 600 * 1000,
-        enabled: !!user && (mergedOptions.enabled ?? true),
-        queryKey: tokenKey!,
+        queryKey: tokenKey,
         queryFn: () => authClient.$fetch("/token", { throw: true }),
-        ...mergedOptions
+        ...mergedOptions,
+        enabled: !!user && (mergedOptions.enabled ?? true)
     })
 
     const { data, refetch } = queryResult
