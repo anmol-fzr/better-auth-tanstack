@@ -4,9 +4,9 @@ import type { AnyUseQueryOptions } from "@tanstack/react-query"
 import { type ReactNode, createContext } from "react"
 
 export type AuthQueryOptions = {
-    queryOptions?: Omit<AnyUseQueryOptions, "queryFn" | "queryKey">
-    sessionQueryOptions?: Omit<AnyUseQueryOptions, "queryFn" | "queryKey">
-    tokenQueryOptions?: Omit<AnyUseQueryOptions, "queryFn" | "queryKey">
+    queryOptions?: AnyUseQueryOptions
+    sessionQueryOptions?: AnyUseQueryOptions
+    tokenQueryOptions?: AnyUseQueryOptions
     sessionKey: string[]
     tokenKey: string[]
     listAccountsKey: string[]
@@ -26,9 +26,7 @@ export const defaultAuthQueryOptions: AuthQueryOptions = {
     optimistic: true
 }
 
-export const AuthQueryContext = createContext<AuthQueryOptions>(
-    defaultAuthQueryOptions
-)
+export const AuthQueryContext = createContext<AuthQueryOptions>(defaultAuthQueryOptions)
 
 export const AuthQueryProvider = ({
     children,
@@ -37,9 +35,7 @@ export const AuthQueryProvider = ({
     children: ReactNode
 } & Partial<AuthQueryOptions>) => {
     return (
-        <AuthQueryContext.Provider
-            value={{ ...defaultAuthQueryOptions, ...props }}
-        >
+        <AuthQueryContext.Provider value={{ ...defaultAuthQueryOptions, ...props }}>
             {children}
         </AuthQueryContext.Provider>
     )

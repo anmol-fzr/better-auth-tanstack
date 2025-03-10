@@ -21,7 +21,7 @@ export async function prefetchSession<
 
     await queryClient.prefetchQuery({
         ...mergedOptions,
-        queryKey: queryOptions?.sessionKey ?? ["session"],
+        queryKey: queryOptions?.sessionKey,
         queryFn: () => data as SessionData
     })
 

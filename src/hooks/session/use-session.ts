@@ -1,46 +1,30 @@
 import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
-import type { createAuthClient } from "better-auth/react"
 import { useContext, useEffect, useState } from "react"
 
 import { AuthQueryContext } from "../../lib/auth-query-provider"
+import type { AuthClient } from "../../types/auth-client"
 import { useUpdateUser } from "./use-update-user"
 
-export function useSession<
-    TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">
->(
+export function useSession<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
-    options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
+    options?: AnyUseQueryOptions
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
-    type User = TAuthClient["$Infer"]["Session"]["user"]
-    type Session = TAuthClient["$Infer"]["Session"]["session"]
+    type User = SessionData["user"]
+    type Session = SessionData["session"]
 
-    const {
-        queryOptions,
-        sessionQueryOptions,
-        sessionKey: queryKey
-    } = useContext(AuthQueryContext)
+    const { queryOptions, sessionQueryOptions, sessionKey: queryKey } = useContext(AuthQueryContext)
+    const mergedOptions = { ...queryOptions, ...sessionQueryOptions, ...options }
+
     const [refetchEnabled, setRefetchEnabled] = useState(false)
-
-    const mergedOptions = {
-        ...queryOptions,
-        ...sessionQueryOptions,
-        ...options
-    }
 
     const queryResult = useQuery<SessionData>({
         refetchOnWindowFocus: refetchEnabled,
         refetchOnReconnect: refetchEnabled,
-        staleTime: 30 * 1000,
-        ...mergedOptions,
+        staleTime: 60 * 1000,
         queryKey,
-        queryFn: async () => {
-            const session = await authClient.getSession({
-                fetchOptions: { throw: true }
-            })
-
-            return session as SessionData
-        }
+        queryFn: () => authClient.getSession({ fetchOptions: { throw: true } }),
+        ...mergedOptions
     })
 
     const { updateUser, updateUserAsync, updateUserError, updateUserPending } =
@@ -50,36 +34,21 @@ export function useSession<
 
     useEffect(() => {
         setRefetchEnabled(!!data)
-
         if (!data) return
 
         const expiresAt = new Date(data.session.expiresAt).getTime()
-        const now = new Date().getTime()
-        const timeUntilExpiry = expiresAt - now
+        const expiresIn = expiresAt - Date.now()
 
-        const timeout = setTimeout(() => {
-            refetch()
-        }, timeUntilExpiry)
+        const timeout = setTimeout(() => refetch(), expiresIn - 10000)
 
         return () => clearTimeout(timeout)
     }, [data, refetch])
 
-    const isSessionExpired = () => {
-        if (!data) return true
-
-        const expiresAt = new Date(data.session.expiresAt).getTime()
-        const now = Date.now()
-
-        return expiresAt < now
-    }
-
-    const sessionData = isSessionExpired() ? undefined : data
-    const session = sessionData?.session as Session | undefined
-    const user = sessionData?.user as User | undefined
+    const session = data?.session as Session | undefined
+    const user = data?.user as User | undefined
 
     return {
         ...queryResult,
-        data: sessionData,
         session,
         user,
         updateUser,
