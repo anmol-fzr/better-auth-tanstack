@@ -200,14 +200,17 @@ import { useListSessions } from "@/hooks/use-auth-hooks"
 function SessionList() {
   const { 
     sessions, 
+    isPending,
+    error
     revokeSession, 
+    revokeSessionPending,
     revokeSessionError,
     revokeSessions,
+    revokeSessionsPending,
     revokeSessionsError,
     revokeOtherSessions,
+    revokeOtherSessionsPending,
     revokeOtherSessionsError,
-    isPending, 
-    error 
    } = useListSessions()
 
   if (isPending) return <div>Loading...</div>;
@@ -234,15 +237,28 @@ function SessionList() {
 ```ts
   const { 
     deviceSessions, 
-    revokeSession, 
-    revokeSessionError,
-    revokeSessions,
-    revokeSessionsError,
+    isPending,
+    error,
+    revokeDeviceSession, 
+    revokeDeviceSessionPending,
+    revokeDeviceSessionError,
     setActiveSession,
-    setActiveSessionError,
-    isPending, 
-    error 
+    setActiveSessionPending,
+    setActiveSessionError
    } = useListDeviceSessions()
+```
+
+## useListPasskeys
+
+```ts
+const {
+    passkeys,
+    isPending,
+    error
+    deletePasskey,
+    deletePasskeyPending,
+    deletePasskeyError
+} = useListPasskeys()
 ```
 
 ### Mutations - updateUser
