@@ -1,13 +1,8 @@
-import { useMutation } from "@tanstack/react-query"
-import { useQueryClient } from "@tanstack/react-query"
 import { useContext } from "react"
-
-import type { BetterFetchOption } from "better-auth/react"
-import type { NonThrowableResult, ThrowableResult } from "../.."
 import { AuthQueryContext, type AuthQueryOptions } from "../../lib/auth-query-provider"
 import type { AuthClient } from "../../types/auth-client"
 import type { ListAccount } from "../../types/list-account"
-import { useOnMutateError } from "../shared/use-mutate-error"
+import { useAuthMutation } from "../shared/use-auth-mutation"
 
 export function useUnlinkAccount<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
@@ -15,53 +10,23 @@ export function useUnlinkAccount<TAuthClient extends AuthClient>(
 ) {
     type UnlinkAccountParams = Parameters<TAuthClient["unlinkAccount"]>[0]
 
-    const queryClient = useQueryClient()
-    const { onMutateError } = useOnMutateError()
+    const { listAccountsKey: queryKey } = useContext(AuthQueryContext)
 
-    const context = useContext(AuthQueryContext)
-    const { listAccountsKey: queryKey, optimistic } = { ...context, ...options }
-
-    const mutation = useMutation({
-        mutationFn: ({ fetchOptions = { throw: true }, ...params }: UnlinkAccountParams) =>
+    const mutation = useAuthMutation<UnlinkAccountParams, ListAccount[]>({
+        queryKey,
+        mutationFn: ({ fetchOptions = { throw: true }, ...params }) =>
             authClient.unlinkAccount({ fetchOptions, ...params }),
-        onMutate: async ({ providerId }) => {
-            if (!optimistic) return
-            await queryClient.cancelQueries({ queryKey })
-
-            const previousData = queryClient.getQueryData(queryKey) as ListAccount[]
-            if (!previousData) return
-
-            queryClient.setQueryData(
-                queryKey,
-                previousData.filter((account) => account.provider !== providerId)
-            )
-
-            return { previousData }
-        },
-        onError: (error, _, context) => onMutateError(error, queryKey, context),
-        onSettled: () => queryClient.refetchQueries({ queryKey })
+        optimisticData: ({ providerId }, previousAccounts) =>
+            previousAccounts.filter((account) => account.provider !== providerId),
+        options
     })
 
     const {
         mutate: unlinkAccount,
-        mutateAsync,
+        mutateAsync: unlinkAccountAsync,
         isPending: unlinkAccountPending,
         error: unlinkAccountError
     } = mutation
-
-    async function unlinkAccountAsync(
-        params: UnlinkAccountParams & { fetchOptions?: { throw?: true } | undefined }
-    ): Promise<ThrowableResult>
-
-    async function unlinkAccountAsync(
-        params: UnlinkAccountParams & { fetchOptions?: BetterFetchOption }
-    ): Promise<NonThrowableResult>
-
-    async function unlinkAccountAsync(
-        params: UnlinkAccountParams
-    ): Promise<ThrowableResult | NonThrowableResult> {
-        return await mutateAsync(params)
-    }
 
     return {
         ...mutation,

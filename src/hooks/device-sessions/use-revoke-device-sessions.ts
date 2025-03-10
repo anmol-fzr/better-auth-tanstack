@@ -1,18 +1,18 @@
 import { useContext } from "react"
 import { AuthQueryContext, type AuthQueryOptions } from "../../lib/auth-query-provider"
-import type { AuthClient } from "../../types/auth-client"
+import type { MultiSessionAuthClient } from "../../types/auth-client"
 import { useAuthMutation } from "../shared/use-auth-mutation"
 
-export function useRevokeSessions<TAuthClient extends AuthClient>(
+export function useRevokeDeviceSessions<TAuthClient extends MultiSessionAuthClient>(
     authClient: TAuthClient,
     options?: AuthQueryOptions
 ) {
-    type Session = TAuthClient["$Infer"]["Session"]["session"]
-    type RevokeSessionsParams = Parameters<TAuthClient["revokeSessions"]>[0]
+    type SessionData = TAuthClient["$Infer"]["Session"]
+    type RevokeDeviceSessionsParams = Parameters<TAuthClient["multiSession"]["revoke"]>[0]
 
-    const { listSessionsKey: queryKey } = useContext(AuthQueryContext)
+    const { listDeviceSessionsKey: queryKey } = useContext(AuthQueryContext)
 
-    const mutation = useAuthMutation<RevokeSessionsParams, Session[]>({
+    const mutation = useAuthMutation<RevokeDeviceSessionsParams, SessionData[]>({
         queryKey,
         mutationFn: ({ fetchOptions = { throw: true }, ...params }) =>
             authClient.revokeSessions({ fetchOptions, ...params }),

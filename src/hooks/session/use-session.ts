@@ -13,7 +13,7 @@ export function useSession<TAuthClient extends AuthClient>(
     type User = SessionData["user"]
     type Session = SessionData["session"]
 
-    const { queryOptions, sessionQueryOptions, sessionKey: queryKey } = useContext(AuthQueryContext)
+    const { sessionQueryOptions, sessionKey: queryKey, queryOptions } = useContext(AuthQueryContext)
     const mergedOptions = { ...queryOptions, ...sessionQueryOptions, ...options }
 
     const [refetchEnabled, setRefetchEnabled] = useState(false)

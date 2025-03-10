@@ -1,15 +1,13 @@
 import type { AnyUseQueryOptions, QueryClient } from "@tanstack/react-query"
-import type { createAuthClient } from "better-auth/react"
 
+import type { AuthClient } from "../types/auth-client"
 import type { AuthQueryOptions } from "./auth-query-provider"
 
-export async function prefetchSession<
-    TAuthClient extends Omit<ReturnType<typeof createAuthClient>, "signUp">
->(
+export async function prefetchSession<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
     queryClient: QueryClient,
     queryOptions?: AuthQueryOptions,
-    options?: Omit<AnyUseQueryOptions, "queryKey" | "queryFn">
+    options?: AnyUseQueryOptions
 ) {
     const { error, data } = await authClient.getSession()
 

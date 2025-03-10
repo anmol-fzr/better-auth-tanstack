@@ -1,19 +1,20 @@
 "use client"
 
-import type { AnyUseQueryOptions } from "@tanstack/react-query"
+import type { AnyUseQueryOptions, QueryKey } from "@tanstack/react-query"
 import { type ReactNode, createContext } from "react"
 
 export type AuthQueryOptions = {
     queryOptions?: AnyUseQueryOptions
     sessionQueryOptions?: AnyUseQueryOptions
     tokenQueryOptions?: AnyUseQueryOptions
-    sessionKey: string[]
-    tokenKey: string[]
-    listAccountsKey: string[]
-    listSessionsKey: string[]
-    listDeviceSessionsKey: string[]
-    listPasskeysKey: string[]
+    sessionKey: QueryKey
+    tokenKey: QueryKey
+    listAccountsKey: QueryKey
+    listSessionsKey: QueryKey
+    listDeviceSessionsKey: QueryKey
+    listPasskeysKey: QueryKey
     optimistic: boolean
+    refetchOnMutate: boolean
 }
 
 export const defaultAuthQueryOptions: AuthQueryOptions = {
@@ -23,7 +24,8 @@ export const defaultAuthQueryOptions: AuthQueryOptions = {
     listSessionsKey: ["list-sessions"],
     listDeviceSessionsKey: ["list-device-sessions"],
     listPasskeysKey: ["list-passkeys"],
-    optimistic: true
+    optimistic: true,
+    refetchOnMutate: true
 }
 
 export const AuthQueryContext = createContext<AuthQueryOptions>(defaultAuthQueryOptions)
