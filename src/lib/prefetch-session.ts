@@ -7,7 +7,7 @@ export async function prefetchSession<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
     queryClient: QueryClient,
     queryOptions?: AuthQueryOptions,
-    options?: AnyUseQueryOptions
+    options?: Partial<AnyUseQueryOptions>
 ) {
     const { error, data } = await authClient.getSession()
 

@@ -11,7 +11,7 @@ import { useSetActiveSession } from "./use-set-active-session"
 
 export function useListDeviceSessions<TAuthClient extends MultiSessionAuthClient>(
     authClient: TAuthClient,
-    options?: AnyUseQueryOptions
+    options?: Partial<AnyUseQueryOptions>
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
     type User = TAuthClient["$Infer"]["Session"]["user"]

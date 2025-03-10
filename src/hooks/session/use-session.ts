@@ -7,7 +7,7 @@ import { useUpdateUser } from "./use-update-user"
 
 export function useSession<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
-    options?: AnyUseQueryOptions
+    options?: Partial<AnyUseQueryOptions>
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
     type User = SessionData["user"]

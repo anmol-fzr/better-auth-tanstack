@@ -10,7 +10,7 @@ import { useUnlinkAccount } from "./use-unlink-account"
 
 export function useListAccounts<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
-    options?: AnyUseQueryOptions
+    options?: Partial<AnyUseQueryOptions>
 ) {
     const { session } = useSession(authClient)
     const { queryOptions, listAccountsKey: queryKey } = useContext(AuthQueryContext)

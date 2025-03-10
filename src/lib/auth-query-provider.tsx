@@ -4,9 +4,9 @@ import type { AnyUseQueryOptions, QueryKey } from "@tanstack/react-query"
 import { type ReactNode, createContext } from "react"
 
 export type AuthQueryOptions = {
-    queryOptions?: AnyUseQueryOptions
-    sessionQueryOptions?: AnyUseQueryOptions
-    tokenQueryOptions?: AnyUseQueryOptions
+    queryOptions?: Partial<AnyUseQueryOptions>
+    sessionQueryOptions?: Partial<AnyUseQueryOptions>
+    tokenQueryOptions?: Partial<AnyUseQueryOptions>
     sessionKey: QueryKey
     tokenKey: QueryKey
     listAccountsKey: QueryKey

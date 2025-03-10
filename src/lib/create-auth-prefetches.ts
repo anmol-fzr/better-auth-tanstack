@@ -9,7 +9,7 @@ export function createAuthPrefetches<TAuthClient extends AuthClient>(
     queryOptions?: AuthQueryOptions
 ) {
     return {
-        prefetchSession: (queryClient: QueryClient, options?: AnyUseQueryOptions) => {
+        prefetchSession: (queryClient: QueryClient, options?: Partial<AnyUseQueryOptions>) => {
             return prefetchSession(
                 authClient,
                 queryClient,

@@ -11,7 +11,7 @@ import { useRevokeSessions } from "./use-revoke-sessions"
 
 export function useListSessions<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
-    options?: AnyUseQueryOptions
+    options?: Partial<AnyUseQueryOptions>
 ) {
     type Session = TAuthClient["$Infer"]["Session"]["session"]
 

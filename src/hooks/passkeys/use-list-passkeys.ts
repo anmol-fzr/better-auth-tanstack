@@ -9,7 +9,7 @@ import { useDeletePasskey } from "./use-delete-passkey"
 
 export function useListPasskeys<TAuthClient extends PasskeyAuthClient>(
     authClient: TAuthClient,
-    options?: AnyUseQueryOptions
+    options?: Partial<AnyUseQueryOptions>
 ) {
     const { session } = useSession(authClient)
     const { listPasskeysKey: queryKey, queryOptions } = useContext(AuthQueryContext)

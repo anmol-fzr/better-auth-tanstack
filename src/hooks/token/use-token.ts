@@ -18,7 +18,7 @@ const decodeJwt = (token: string) => {
 
 export function useToken<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
-    options?: AnyUseQueryOptions
+    options?: Partial<AnyUseQueryOptions>
 ) {
     const { tokenKey, tokenQueryOptions, queryOptions } = useContext(AuthQueryContext)
     const { user } = useSession(authClient, options)
