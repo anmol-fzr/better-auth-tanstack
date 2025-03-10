@@ -18,7 +18,7 @@ For the `useSession` hook to refresh on sign in, sign out, and sign up without e
 
 If you are using Next.js App Router with protected middleware routes, `router.refresh()` is required as well to clear the router cache.
 
-[@daveyplate/better-auth-ui](https://github.com/daveyplate/better-auth-ui) The AuthCard accepts an `onSessionChange` prop which is a great place to refetch for all of the auth functions, where it shows `onSessionChange={() => router.refresh()}` in the App Router example.
+[@daveyplate/better-auth-ui](https://better-auth-ui.com) Better Auth UI supports better-auth-tanstack out of the box! You simply need to use the `AuthUIProviderTanstack`.
 
 ## Setting up the AuthQueryProvider
 
@@ -74,6 +74,7 @@ The `AuthQueryProvider` component accepts the following props. The default `stal
 | listAccountsKey?            | string[]                                                           | Optional key for the listAccounts query. The default is `["list-accounts"]`.                                           |
 | listSessionsKey?            | string[]                                                           | Optional key for the listSessions query. The default is `["list-sessions"]`.                                           |
 | optimistic?            | boolean                                                           | Whether to perform optimistic updates. The default is `true`.                                           |
+| refetchOnMutate?            | boolean                                                           | Whether to refetch after mutates. The default is `true`.                                           |
 
 
 ## Creating `use-auth-hooks.ts`
@@ -90,7 +91,8 @@ export const {
     usePrefetchSession, 
     useToken,
     useListAccounts,
-    useListSessions
+    useListSessions,
+    useListPasskeys
 } = createAuthHooks(authClient)
 ```
 
@@ -187,14 +189,7 @@ function AccountList() {
 Use the `unlinkAccount` function to unlink an account by provider ID. This is the optimistic example. See below for non-optimistic examples.
 
 ```ts
-unlinkAccount("github")
-  .then({ error } => {
-    if (error) {
-      console.error("Failed to unlink account:", error)
-    } else {
-      console.log("Account unlinked successfully")
-    }
-  })
+unlinkAccount({ providerId: "github" })
 ```
 
 ## useListSessions
@@ -256,9 +251,9 @@ function SessionList() {
 
 Optimistic example to update user's name with no loaders. Optimistically updates the user in the Tanstack Query cache instantly. Revalidates on success, reverts on error. Uses the default setting for `optimistic` (true) prop on `AuthQueryProvider`.
 
-Errors can be handled by showing an error Toast or throwing an error to an ErrorBoundary. We also support the Tanstack Query global error configuration:
+This package supports the Tanstack Query global error configuration:
 
-`queryClient.getQueryCache().config.onError` gets called automatically, so you can set up global error toasts. [Tanstack Query Global Error Callbacks](https://tkdodo.eu/blog/react-query-error-handling#the-global-callbacks)
+`queryClient.getQueryCache().config.onError` gets called automatically, so you can set up global error toasts to show `error.message || error.statusText`. [Tanstack Query Global Error Callbacks](https://tkdodo.eu/blog/react-query-error-handling#the-global-callbacks)
 
 ```tsx
 "use client"
@@ -279,18 +274,14 @@ export default function SettingsPage() {
         const name = formData.get("name") as string
 
         setDisabled(true)
-        updateUser({ name: name }).then(({ error }) => {
-            setDisabled(!error)
-
-            // Show an error Toast
-        })
+        updateUser({ name: name })
     }
 
-    // useEffect(() => {
-    //     if (updateError) {
-    //         // Show an error Toast
-    //     }
-    // }, [updateError])
+    useEffect(() => {
+        if (updateError) {
+            // Show an error Toast
+        }
+    }, [updateError])
 
     if (isPending || !user) {
         return (
@@ -339,6 +330,9 @@ export default function SettingsPage() {
 #### Unoptimistic example
 
 Unoptimistic example with `useActionState` to show loaders for updating a user's name. Set `optimistic` to `false` in the `AuthQueryProvider` props to disable optimistic cache updates. Sends a request to `/api/auth/update-user` then updates the user in the Tanstack Query cache after the request is successful. Then revalidates the session by refetching.
+
+Note that we use `updateUserAsync`
+
 ```tsx
 "use client"
 
@@ -353,7 +347,7 @@ import { useSession } from "@/hooks/use-auth-hooks"
 import { cn } from "@/lib/utils"
 
 export default function SettingsPage() {
-    const { user, isPending, updateUser, updateError } = useSession()
+    const { user, isPending, updateUserAsync, updateError } = useSession()
     const [disabled, setDisabled] = useState(true)
 
     type ActionState = Parameters<typeof updateUser>[0]
@@ -363,7 +357,7 @@ export default function SettingsPage() {
 
         setDisabled(true)
 
-        const { error } = await updateUser({ name })
+        const { error } = await updateUserAsync({ name, fetchOptions: { throw: false } })
 
         if (error) {
             // Show an error Toast or throw an error to an ErrorBoundary
