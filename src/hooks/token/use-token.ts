@@ -7,11 +7,17 @@ import type { AuthClient } from "../../types/auth-client"
 import { useSession } from "../session/use-session"
 
 export const decodeJwt = (token: string) => {
-    const parts = token.split('.').map((part) =>
-        atob(part.replace(/-/g, '+').replace(/_/g, '/'))
-    )
+    const decode = (data: string) => {
+        if (typeof Buffer === 'undefined') {
+            return atob(data)
+        }
+        return Buffer.from(data, 'base64').toString()
+    };
+    const parts = token
+        .split('.')
+        .map((part) => decode(part.replace(/-/g, '+').replace(/_/g, '/')))
 
-    return JSON.parse(parts[1]);
+    return JSON.parse(parts[1])
 }
 
 export function useToken<TAuthClient extends AuthClient>(
