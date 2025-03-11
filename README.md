@@ -10,12 +10,12 @@ First, you need to install and integrate [Better Auth](https://better-auth.com) 
 
 ## Installation
 
-###pnpm
+pnpm
 ```bash
 pnpm add @daveyplate/better-auth-tanstack@latest
 ```
 
-###npm
+npm
 ```bash
 npm install @daveyplate/better-auth-tanstack@latest
 ```
