@@ -2,7 +2,7 @@
 
 Tanstack Query hooks for Better Auth. Provides tighter control of when requests are made, optimistic mutations, and supports offline caching for offline auth via Persist Cients.
 
-More to come soon... (e.g. more SSR prefetches, organization plugin hooks, multisession plugin, SWR port, tighter better-auth-ui integration)
+More to come soon... (e.g. more SSR prefetches, organization & stripe plugin hooks, SWR port...)
 
 ## Prerequisites
 
@@ -10,11 +10,17 @@ First, you need to install and integrate [Better Auth](https://better-auth.com) 
 
 ## Installation
 
+pnpm
 ```bash
-npm install @daveyplate/better-auth-tanstack
+pnpm add @daveyplate/better-auth-tanstack@latest
 ```
 
-For the `useSession` hook to refresh on sign in, sign out, and sign up without email verification, you must manually call `refetch`, `queryClient.invalidateQueries()` for `["session"]`, or `queryClient.clear()` in the `onSuccess` callback of each of those functions or after awaiting and checking for an error.
+npm
+```bash
+npm install @daveyplate/better-auth-tanstack@latest
+```
+
+For the `useSession` hook to refresh on sign in, sign out, and sign up without email verification, you must manually call `refetch` or `queryClient.resetQueries()` for `["session"]` in the `onSuccess` callback of each of those functions or after awaiting and checking for an error.
 
 If you are using Next.js App Router with protected middleware routes, `router.refresh()` is required as well to clear the router cache.
 
