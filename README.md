@@ -10,8 +10,14 @@ First, you need to install and integrate [Better Auth](https://better-auth.com) 
 
 ## Installation
 
+###pnpm
 ```bash
-npm install @daveyplate/better-auth-tanstack
+pnpm add @daveyplate/better-auth-tanstack@latest
+```
+
+###npm
+```bash
+npm install @daveyplate/better-auth-tanstack@latest
 ```
 
 For the `useSession` hook to refresh on sign in, sign out, and sign up without email verification, you must manually call `refetch`, `queryClient.invalidateQueries()` for `["session"]`, or `queryClient.clear()` in the `onSuccess` callback of each of those functions or after awaiting and checking for an error.
