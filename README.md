@@ -20,7 +20,7 @@ npm
 npm install @daveyplate/better-auth-tanstack@latest
 ```
 
-For the `useSession` hook to refresh on sign in, sign out, and sign up without email verification, you must manually call `refetch`, `queryClient.invalidateQueries()` for `["session"]`, or `queryClient.clear()` in the `onSuccess` callback of each of those functions or after awaiting and checking for an error.
+For the `useSession` hook to refresh on sign in, sign out, and sign up without email verification, you must manually call `refetch` or `queryClient.resetQueries()` for `["session"]` in the `onSuccess` callback of each of those functions or after awaiting and checking for an error.
 
 If you are using Next.js App Router with protected middleware routes, `router.refresh()` is required as well to clear the router cache.
 
