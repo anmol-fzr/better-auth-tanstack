@@ -8,14 +8,12 @@ import { useSession } from "../session/use-session"
 
 export const decodeJwt = (token: string) => {
     const decode = (data: string) => {
-        if (typeof Buffer === 'undefined') {
+        if (typeof Buffer === "undefined") {
             return atob(data)
         }
-        return Buffer.from(data, 'base64').toString()
-    };
-    const parts = token
-        .split('.')
-        .map((part) => decode(part.replace(/-/g, '+').replace(/_/g, '/')))
+        return Buffer.from(data, "base64").toString()
+    }
+    const parts = token.split(".").map((part) => decode(part.replace(/-/g, "+").replace(/_/g, "/")))
 
     return JSON.parse(parts[1])
 }
