@@ -34,7 +34,8 @@ export function useSession<TAuthClient extends AuthClient>(
 
     useEffect(() => {
         setRefetchEnabled(!!data)
-        if (!data) return
+        if (!data?.session) return
+        if (!data.session?.expiresAt) return
 
         const expiresAt = new Date(data.session.expiresAt).getTime()
         const expiresIn = expiresAt - Date.now()
