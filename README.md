@@ -91,7 +91,7 @@ Create a file named `auth-hooks.ts` and set up the hooks using `createAuthHooks`
 import { createAuthHooks } from "@daveyplate/better-auth-tanstack"
 import { authClient } from "@/lib/auth-client"
 
-export const auth = createAuthHooks(authClient)
+export const authHooks = createAuthHooks(authClient)
 
 export const {
     useSession,
