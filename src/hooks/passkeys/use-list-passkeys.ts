@@ -1,37 +1,20 @@
-import { skipToken } from "@tanstack/query-core"
-import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
+import type { AnyUseQueryOptions } from "@tanstack/react-query"
 import { useContext } from "react"
+
 import { AuthQueryContext } from "../../lib/auth-query-provider"
 import type { PasskeyAuthClient } from "../../types/auth-client"
-import type { Passkey } from "../../types/passkey"
-import { useSession } from "../session/use-session"
-import { useDeletePasskey } from "./use-delete-passkey"
+import { useAuthQuery } from "../shared/use-auth-query"
 
 export function useListPasskeys<TAuthClient extends PasskeyAuthClient>(
     authClient: TAuthClient,
     options?: Partial<AnyUseQueryOptions>
 ) {
-    const { session } = useSession(authClient)
-    const { listPasskeysKey: queryKey, queryOptions } = useContext(AuthQueryContext)
-    const mergedOptions = { ...queryOptions, ...options }
+    const { listPasskeysKey: queryKey } = useContext(AuthQueryContext)
 
-    const queryResult = useQuery<Passkey[]>({
-        ...mergedOptions,
+    return useAuthQuery({
+        authClient,
         queryKey,
-        queryFn: session
-            ? () => authClient.passkey.listUserPasskeys({ fetchOptions: { throw: true } })
-            : skipToken
+        queryFn: authClient.passkey.listUserPasskeys,
+        options
     })
-
-    const { deletePasskey, deletePasskeyAsync, deletePasskeyPending, deletePasskeyError } =
-        useDeletePasskey(authClient)
-
-    return {
-        ...queryResult,
-        passkeys: queryResult.data,
-        deletePasskey,
-        deletePasskeyAsync,
-        deletePasskeyPending,
-        deletePasskeyError
-    }
 }

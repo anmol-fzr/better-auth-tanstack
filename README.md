@@ -68,7 +68,7 @@ export default function RootLayout({
 
 ## AuthQueryProvider Props
 
-The `AuthQueryProvider` component accepts the following props. The default `staleTime` for sessions is 30 seconds and for JWT tokens is 10 minutes.
+The `AuthQueryProvider` component accepts the following props. The default `staleTime` for `useSession` is 60 seconds and for `useToken` is 10 minutes.
 
 | Prop                  | Type                                                                 | Description                                                                 |
 |-----------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------------|
@@ -83,23 +83,36 @@ The `AuthQueryProvider` component accepts the following props. The default `stal
 | refetchOnMutate?            | boolean                                                           | Whether to refetch after mutates. The default is `true`.                                           |
 
 
-## Creating `use-auth-hooks.ts`
+## Creating `auth-hooks.ts`
 
-Create a file named `use-auth-hooks.ts` and set up the hooks using `createAuthHooks` function. This function takes the `authClient` instance and returns the hooks with full type safety and inference from your `authClient`.
+Create a file named `auth-hooks.ts` and set up the hooks using `createAuthHooks` function. This function takes the `authClient` instance and returns the hooks with full type safety and inference from your `authClient`.
 
 ```ts
-import { createAuthClient } from "better-auth/react"
 import { createAuthHooks } from "@daveyplate/better-auth-tanstack"
 import { authClient } from "@/lib/auth-client"
 
-export const { 
-    useSession, 
-    usePrefetchSession, 
+const auth = createAuthHooks(authClient)
+export default auth
+
+export const {
+    useSession,
+    usePrefetchSession,
     useToken,
     useListAccounts,
     useListSessions,
-    useListPasskeys
-} = createAuthHooks(authClient)
+    useListDeviceSessions,
+    useListPasskeys,
+    useUpdateUser,
+    useUnlinkAccount,
+    useRevokeOtherSessions,
+    useRevokeSession,
+    useRevokeSessions,
+    useSetActiveSession,
+    useRevokeDeviceSession,
+    useDeletePasskey,
+    useAuthQuery,
+    useAuthMutation
+} = auth
 ```
 
 ## Using the Hooks
@@ -117,7 +130,7 @@ The `useSession` hook is used to fetch the session.
 #### Example
 
 ```tsx
-import { useSession } from "@/hooks/use-auth-hooks"
+import { useSession } from "@/hooks/auth-hooks"
 
 function MyComponent() {
     const { 
@@ -126,9 +139,7 @@ function MyComponent() {
         user, 
         isPending, 
         refetch, 
-        error, 
-        updateUser, 
-        updateError 
+        error
     } = useSession()
 
     if (isPending) return <div>Loading...</div>
@@ -150,10 +161,10 @@ The `useToken` hook is used to fetch the JWT token if better-auth JWT plugin is 
 #### Example
 
 ```tsx
-import { useToken } from "@/hooks/use-auth-hooks"
+import { useToken } from "@/hooks/auth-hooks"
 
 function MyComponent() {
-    const { token, payload, isPending } = useToken()
+    const { data, token, payload, isPending, error } = useToken()
 
     if (isPending) return <div>Loading...</div>
 
@@ -168,10 +179,10 @@ The `useListAccounts` hook allows you to list and manage user accounts linked to
 ### Usage
 
 ```ts
-import { useListAccounts } from "@/hooks/use-auth-hooks"
+import { useListAccounts } from "@/hooks/auth-hooks"
 
 function AccountList() {
-  const { accounts, unlinkAccount, unlinkAccountError, isPending, error } = useListAccounts()
+  const { data: accounts, isPending, error } = useListAccounts()
 
   if (isPending) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>
@@ -201,23 +212,15 @@ unlinkAccount({ providerId: "github" })
 ## useListSessions
 
 ```ts
-import { useListSessions } from "@/hooks/use-auth-hooks"
+import { useListSessions, useRevokeSession } from "@/hooks/auth-hooks"
 
 function SessionList() {
   const { 
-    sessions, 
+    data: sessions, 
     isPending,
     error
-    revokeSession, 
-    revokeSessionPending,
-    revokeSessionError,
-    revokeSessions,
-    revokeSessionsPending,
-    revokeSessionsError,
-    revokeOtherSessions,
-    revokeOtherSessionsPending,
-    revokeOtherSessionsError,
    } = useListSessions()
+   const { mutate: revokeSession } = useRevokeSession()
 
   if (isPending) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>
@@ -242,15 +245,9 @@ function SessionList() {
 
 ```ts
   const { 
-    deviceSessions, 
+    data: deviceSessions, 
     isPending,
-    error,
-    revokeDeviceSession, 
-    revokeDeviceSessionPending,
-    revokeDeviceSessionError,
-    setActiveSession,
-    setActiveSessionPending,
-    setActiveSessionError
+    error
    } = useListDeviceSessions()
 ```
 
@@ -258,12 +255,9 @@ function SessionList() {
 
 ```ts
 const {
-    passkeys,
+    data: passkeys,
     isPending,
     error
-    deletePasskey,
-    deletePasskeyPending,
-    deletePasskeyError
 } = useListPasskeys()
 ```
 
@@ -286,10 +280,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useSession } from "@/hooks/use-auth-hooks"
+import { useSession, useUpdateUser } from "@/hooks/auth-hooks"
 
 export default function SettingsPage() {
-    const { user, isPending, updateUser, updateError } = useSession()
+    const { user, isPending } = useSession()
+    const { mutate: updateUser, error: updateError } = useUpdateUser()
     const [disabled, setDisabled] = useState(true)
 
     const updateProfile = (formData: FormData) => {
@@ -365,11 +360,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useSession } from "@/hooks/use-auth-hooks"
+import { useSession, useUpdateUser } from "@/hooks/auth-hooks"
 import { cn } from "@/lib/utils"
 
 export default function SettingsPage() {
-    const { user, isPending, updateUserAsync, updateError } = useSession()
+    const { user, isPending } = useSession()
+    const { mutate: updateUser, error: updateError } = useUpdateUser()
     const [disabled, setDisabled] = useState(true)
 
     type ActionState = Parameters<typeof updateUser>[0]
@@ -488,6 +484,47 @@ export default async function Page() {
             <ClientPage />
         </HydrationBoundary>
     )
+}
+```
+
+### useAuthQuery
+```ts
+import type { AnyUseQueryOptions } from "@tanstack/react-query"
+import { useAuthQuery } from "@/lib/auth-hooks"
+import { authClient } from "@/lib/auth-client"
+
+export function useListDeviceSessions(
+    options?: Partial<AnyUseQueryOptions>
+) {
+    return useAuthQuery({
+        queryKey: ["device-sessions"],
+        queryFn: authClient.multiSession.listDeviceSessions,
+        options
+    })
+}
+```
+
+### useAuthMutation
+```ts
+import { AuthQueryContext, type AuthQueryOptions } from "@daveyplate/better-auth-tanstack"
+import { authClient } from "@/lib/auth-client"
+import { useAuthMutation } from "@/lib/auth-hooks"
+
+export function useUpdateUser(
+    options?: Partial<AuthQueryOptions>
+) {
+    type SessionData = typeof authClient["$Infer"]["Session"]
+    const { sessionKey: queryKey } = useContext(AuthQueryContext)
+
+    return useAuthMutation({
+        queryKey,
+        mutationFn: authClient.updateUser,
+        optimisticData: (params, previousSession: SessionData) => ({
+            ...previousSession,
+            user: { ...previousSession.user, ...params }
+        }),
+        options
+    })
 }
 ```
 

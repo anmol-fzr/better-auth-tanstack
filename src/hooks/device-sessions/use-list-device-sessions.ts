@@ -1,61 +1,21 @@
-import { skipToken } from "@tanstack/query-core"
-import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
+import type { AnyUseQueryOptions } from "@tanstack/react-query"
 import { useContext } from "react"
 
 import { AuthQueryContext } from "../../lib/auth-query-provider"
 
 import type { MultiSessionAuthClient } from "../../types/auth-client"
-import { useSession } from "../session/use-session"
-import { useRevokeDeviceSession } from "./use-revoke-device-session"
-import { useSetActiveSession } from "./use-set-active-session"
+import { useAuthQuery } from "../shared/use-auth-query"
 
 export function useListDeviceSessions<TAuthClient extends MultiSessionAuthClient>(
     authClient: TAuthClient,
     options?: Partial<AnyUseQueryOptions>
 ) {
-    type SessionData = TAuthClient["$Infer"]["Session"]
-    type User = TAuthClient["$Infer"]["Session"]["user"]
-    type Session = TAuthClient["$Infer"]["Session"]["session"]
+    const { listDeviceSessionsKey: queryKey } = useContext(AuthQueryContext)
 
-    const { session } = useSession(authClient)
-    const { queryOptions, listDeviceSessionsKey: queryKey } = useContext(AuthQueryContext)
-
-    const mergedOptions = { ...queryOptions, ...options }
-
-    const queryResult = useQuery<SessionData[]>({
-        ...mergedOptions,
+    return useAuthQuery({
+        authClient,
         queryKey,
-        queryFn: session
-            ? () => authClient.multiSession.listDeviceSessions({ fetchOptions: { throw: true } })
-            : skipToken
+        queryFn: authClient.multiSession.listDeviceSessions,
+        options
     })
-
-    const { data: deviceSessions } = queryResult
-
-    const {
-        revokeDeviceSession,
-        revokeDeviceSessionAsync,
-        revokeDeviceSessionPending,
-        revokeDeviceSessionError
-    } = useRevokeDeviceSession(authClient)
-
-    const {
-        setActiveSession,
-        setActiveSessionAsync,
-        setActiveSessionPending,
-        setActiveSessionError
-    } = useSetActiveSession(authClient)
-
-    return {
-        ...queryResult,
-        deviceSessions,
-        revokeDeviceSession,
-        revokeDeviceSessionAsync,
-        revokeDeviceSessionPending,
-        revokeDeviceSessionError,
-        setActiveSession,
-        setActiveSessionAsync,
-        setActiveSessionPending,
-        setActiveSessionError
-    }
 }

@@ -1,16 +1,18 @@
-import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
-import { useContext, useEffect, useMemo } from "react"
+import type { AnyUseQueryOptions } from "@tanstack/react-query"
+import { useCallback, useContext, useEffect, useMemo } from "react"
 
 import { AuthQueryContext } from "../../lib/auth-query-provider"
 
 import type { AuthClient } from "../../types/auth-client"
 import { useSession } from "../session/use-session"
+import { useAuthQuery } from "../shared/use-auth-query"
 
 export const decodeJwt = (token: string) => {
     const decode = (data: string) => {
         if (typeof Buffer === "undefined") {
             return atob(data)
         }
+
         return Buffer.from(data, "base64").toString()
     }
     const parts = token.split(".").map((part) => decode(part.replace(/-/g, "+").replace(/_/g, "/")))
@@ -22,20 +24,20 @@ export function useToken<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
     options?: Partial<AnyUseQueryOptions>
 ) {
+    const { data: sessionData } = useSession(authClient, options)
     const { tokenKey, tokenQueryOptions, queryOptions } = useContext(AuthQueryContext)
-    const { user } = useSession(authClient, options)
-
     const mergedOptions = { ...queryOptions, ...tokenQueryOptions, ...options }
 
-    const queryResult = useQuery<{ token: string } | null>({
-        staleTime: 600 * 1000,
+    const queryResult = useAuthQuery<{ token: string }>({
+        authClient,
         queryKey: tokenKey,
-        queryFn: () => authClient.$fetch("/token", { throw: true }),
-        ...mergedOptions,
-        enabled: !!user && (mergedOptions.enabled ?? true)
+        queryFn: ({ fetchOptions }) => authClient.$fetch("/token", fetchOptions),
+        options: {
+            enabled: !!sessionData && (mergedOptions.enabled ?? true)
+        }
     })
 
-    const { data, refetch } = queryResult
+    const { data, refetch, ...rest } = queryResult
     const payload = useMemo(() => (data ? decodeJwt(data.token) : null), [data])
 
     useEffect(() => {
@@ -52,16 +54,30 @@ export function useToken<TAuthClient extends AuthClient>(
         return () => clearTimeout(timeout)
     }, [data, refetch])
 
-    const isTokenExpired = () => {
+    const isTokenExpired = useCallback(() => {
         if (!data?.token) return true
 
         const payload = decodeJwt(data.token)
         if (!payload?.exp) return true
 
         return payload.exp < Date.now() / 1000
-    }
+    }, [data])
 
-    const tokenData = !user || isTokenExpired() || user?.id !== payload?.sub ? undefined : data
+    useEffect(() => {
+        if (!sessionData) return
 
-    return { ...queryResult, data: tokenData, token: tokenData?.token, payload }
+        if (payload?.sub !== sessionData.user.id) {
+            refetch()
+        }
+    }, [payload, sessionData, refetch])
+
+    const tokenData = useMemo(
+        () =>
+            !sessionData || isTokenExpired() || sessionData?.user.id !== payload?.sub
+                ? undefined
+                : data,
+        [sessionData, isTokenExpired, payload, data]
+    )
+
+    return { ...rest, data: tokenData, token: tokenData?.token, payload }
 }

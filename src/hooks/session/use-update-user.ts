@@ -8,33 +8,16 @@ export function useUpdateUser<TAuthClient extends AuthClient>(
     options?: Partial<AuthQueryOptions>
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
-    type UpdateUserParams = Parameters<TAuthClient["updateUser"]>[0]
 
     const { sessionKey: queryKey } = useContext(AuthQueryContext)
 
-    const mutation = useAuthMutation<UpdateUserParams, SessionData>({
+    return useAuthMutation({
         queryKey,
-        mutationFn: ({ fetchOptions = { throw: true }, ...params }) =>
-            authClient.updateUser({ fetchOptions, ...params }),
-        optimisticData: (params, previousSession) => ({
+        mutationFn: authClient.updateUser,
+        optimisticData: (params, previousSession: SessionData) => ({
             ...previousSession,
             user: { ...previousSession.user, ...params }
         }),
         options
     })
-
-    const {
-        mutate: updateUser,
-        mutateAsync: updateUserAsync,
-        isPending: updateUserPending,
-        error: updateUserError
-    } = mutation
-
-    return {
-        ...mutation,
-        updateUser,
-        updateUserAsync,
-        updateUserPending,
-        updateUserError
-    }
 }

@@ -8,33 +8,16 @@ export function useRevokeDeviceSession<TAuthClient extends MultiSessionAuthClien
     options?: Partial<AuthQueryOptions>
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
-    type RevokeDeviceSessionParams = { sessionToken: string }
 
     const { listDeviceSessionsKey: queryKey } = useContext(AuthQueryContext)
 
-    const mutation = useAuthMutation<RevokeDeviceSessionParams, SessionData[]>({
+    return useAuthMutation({
         queryKey,
-        mutationFn: ({ fetchOptions = { throw: true }, ...params }) =>
-            authClient.multiSession.revoke({ fetchOptions, ...params }),
-        optimisticData: ({ sessionToken }, previousSessionDatas) =>
+        mutationFn: authClient.multiSession.revoke,
+        optimisticData: ({ sessionToken }, previousSessionDatas: SessionData[]) =>
             previousSessionDatas.filter(
                 (sessionData) => sessionData.session.token !== sessionToken
             ),
         options
     })
-
-    const {
-        mutate: revokeDeviceSession,
-        mutateAsync: revokeDeviceSessionAsync,
-        isPending: revokeDeviceSessionPending,
-        error: revokeDeviceSessionError
-    } = mutation
-
-    return {
-        ...mutation,
-        revokeDeviceSession,
-        revokeDeviceSessionAsync,
-        revokeDeviceSessionPending,
-        revokeDeviceSessionError
-    }
 }

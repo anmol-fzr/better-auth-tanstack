@@ -3,30 +3,36 @@ import type { BetterFetchOption } from "better-auth/react"
 import { useContext } from "react"
 import type { AuthQueryOptions, NonThrowableResult, ThrowableResult } from "../.."
 import { AuthQueryContext } from "../../lib/auth-query-provider"
-import { useOnMutateError } from "../shared/use-mutate-error"
+import { useOnMutateError } from "./use-mutate-error"
 
-type MutationParams<TParams> = TParams & { fetchOptions?: BetterFetchOption }
+type AuthMutationFn<TParams> = (params: TParams) => Promise<ThrowableResult | NonThrowableResult>
 
-interface UseAuthMutationOptions<TParams, TData> {
-    queryKey: QueryKey
-    mutationFn(params: MutationParams<TParams>): Promise<ThrowableResult | NonThrowableResult>
-    optimisticData?(params: TParams, previousData: TData): TData
-    options?: Partial<AuthQueryOptions>
-}
-
-export function useAuthMutation<TParams, TData>({
+export function useAuthMutation<
+    // biome-ignore lint/suspicious/noExplicitAny:
+    TAuthFn extends AuthMutationFn<any>
+>({
     queryKey,
     mutationFn,
     optimisticData,
     options
-}: UseAuthMutationOptions<TParams, TData>) {
+}: {
+    queryKey: QueryKey
+    mutationFn: TAuthFn
+    optimisticData?(
+        params: Omit<Parameters<TAuthFn>[0], "fetchOptions">,
+        previousData: unknown
+    ): unknown
+    options?: Partial<AuthQueryOptions>
+}) {
+    type TParams = Parameters<TAuthFn>[0]
     const queryClient = useQueryClient()
     const context = useContext(AuthQueryContext)
     const { optimistic } = { ...context, ...options }
     const { onMutateError } = useOnMutateError()
 
     const mutation = useMutation({
-        mutationFn,
+        mutationFn: ({ fetchOptions = { throw: true }, ...params }: TParams) =>
+            mutationFn({ fetchOptions, ...params }),
         onMutate: async (params: TParams) => {
             if (!optimistic || !optimisticData) return
             await queryClient.cancelQueries({ queryKey })
@@ -34,11 +40,11 @@ export function useAuthMutation<TParams, TData>({
             const previousData = queryClient.getQueryData(queryKey)
             if (!previousData) return
 
-            queryClient.setQueryData(queryKey, () => optimisticData(params, previousData as TData))
+            queryClient.setQueryData(queryKey, () => optimisticData(params, previousData))
             return { previousData }
         },
         onError: (error, _, context) => onMutateError(error, queryKey, context),
-        onSettled: () => queryClient.refetchQueries({ queryKey })
+        onSettled: () => queryClient.invalidateQueries({ queryKey })
     })
 
     const { mutate, isPending, error } = mutation
@@ -51,9 +57,7 @@ export function useAuthMutation<TParams, TData>({
         params: TParams & { fetchOptions?: BetterFetchOption }
     ): Promise<NonThrowableResult>
 
-    async function mutateAsync(
-        params: MutationParams<TParams>
-    ): Promise<ThrowableResult | NonThrowableResult> {
+    async function mutateAsync(params: TParams): Promise<ThrowableResult | NonThrowableResult> {
         return await mutation.mutateAsync(params)
     }
 

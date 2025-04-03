@@ -15,7 +15,8 @@ export function useSetActiveSession<TAuthClient extends MultiSessionAuthClient>(
 
     const queryClient = useQueryClient()
     const { onMutateError } = useOnMutateError()
-    const { listDeviceSessionsKey: queryKey } = useContext(AuthQueryContext)
+    const context = useContext(AuthQueryContext)
+    const { listDeviceSessionsKey: queryKey } = { ...context, ...options }
 
     const mutation = useMutation({
         mutationFn: ({ fetchOptions = { throw: true }, ...params }: SetActiveSessionParams) =>

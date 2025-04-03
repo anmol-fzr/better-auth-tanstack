@@ -9,32 +9,17 @@ export function useRevokeOtherSessions<TAuthClient extends AuthClient>(
     options?: Partial<AuthQueryOptions>
 ) {
     type Session = TAuthClient["$Infer"]["Session"]["session"]
-    type RevokeOtherSessionsParams = Parameters<TAuthClient["revokeOtherSessions"]>[0]
 
     const { listSessionsKey: queryKey } = useContext(AuthQueryContext)
-    const { session } = useSession(authClient)
+    const { data: sessionData } = useSession(authClient)
 
-    const mutation = useAuthMutation<RevokeOtherSessionsParams, Session[]>({
+    return useAuthMutation({
         queryKey,
-        mutationFn: ({ fetchOptions = { throw: true }, ...params }) =>
-            authClient.revokeOtherSessions({ fetchOptions, ...params }),
-        optimisticData: (_, previousSessions) =>
-            previousSessions.filter((previousSession) => previousSession.token !== session?.token),
+        mutationFn: authClient.revokeOtherSessions,
+        optimisticData: (_, previousSessions: Session[]) =>
+            previousSessions.filter(
+                (previousSession) => previousSession.token !== sessionData?.session.token
+            ),
         options
     })
-
-    const {
-        mutate: revokeOtherSessions,
-        mutateAsync: revokeOtherSessionsAsync,
-        isPending: revokeOtherSessionsPending,
-        error: revokeOtherSessionsError
-    } = mutation
-
-    return {
-        ...mutation,
-        revokeOtherSessions,
-        revokeOtherSessionsAsync,
-        revokeOtherSessionsPending,
-        revokeOtherSessionsError
-    }
 }

@@ -8,31 +8,13 @@ export function useUnlinkAccount<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
     options?: AuthQueryOptions
 ) {
-    type UnlinkAccountParams = Parameters<TAuthClient["unlinkAccount"]>[0]
-
     const { listAccountsKey: queryKey } = useContext(AuthQueryContext)
 
-    const mutation = useAuthMutation<UnlinkAccountParams, ListAccount[]>({
+    return useAuthMutation({
         queryKey,
-        mutationFn: ({ fetchOptions = { throw: true }, ...params }) =>
-            authClient.unlinkAccount({ fetchOptions, ...params }),
-        optimisticData: ({ providerId }, previousAccounts) =>
+        mutationFn: authClient.unlinkAccount,
+        optimisticData: ({ providerId }, previousAccounts: ListAccount[]) =>
             previousAccounts.filter((account) => account.provider !== providerId),
         options
     })
-
-    const {
-        mutate: unlinkAccount,
-        mutateAsync: unlinkAccountAsync,
-        isPending: unlinkAccountPending,
-        error: unlinkAccountError
-    } = mutation
-
-    return {
-        ...mutation,
-        unlinkAccount,
-        unlinkAccountAsync,
-        unlinkAccountPending,
-        unlinkAccountError
-    }
 }

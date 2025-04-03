@@ -1,22 +1,23 @@
-import type { AnyUseQueryOptions } from "@tanstack/react-query"
+import type { AnyUseQueryOptions, QueryKey } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
 import { useContext } from "react"
 
 import { useListAccounts } from "../hooks/accounts/use-list-accounts"
-import { useListDeviceSessions } from "../hooks/device-sessions/use-list-device-sessions"
-import { useSession } from "../hooks/session/use-session"
-import { useListSessions } from "../hooks/sessions/use-list-sessions"
-import { useToken } from "../hooks/token/use-token"
-
 import { useUnlinkAccount } from "../hooks/accounts/use-unlink-account"
+import { useListDeviceSessions } from "../hooks/device-sessions/use-list-device-sessions"
 import { useRevokeDeviceSession } from "../hooks/device-sessions/use-revoke-device-session"
 import { useSetActiveSession } from "../hooks/device-sessions/use-set-active-session"
 import { useDeletePasskey } from "../hooks/passkeys/use-delete-passkey"
 import { useListPasskeys } from "../hooks/passkeys/use-list-passkeys"
+import { useSession } from "../hooks/session/use-session"
 import { useUpdateUser } from "../hooks/session/use-update-user"
+import { useListSessions } from "../hooks/sessions/use-list-sessions"
 import { useRevokeOtherSessions } from "../hooks/sessions/use-revoke-other-sessions"
 import { useRevokeSession } from "../hooks/sessions/use-revoke-session"
 import { useRevokeSessions } from "../hooks/sessions/use-revoke-sessions"
+import { useAuthMutation } from "../hooks/shared/use-auth-mutation"
+import { type BetterFetchRequest, useAuthQuery } from "../hooks/shared/use-auth-query"
+import { useToken } from "../hooks/token/use-token"
 import type { AuthClient, MultiSessionAuthClient, PasskeyAuthClient } from "../types/auth-client"
 import { AuthQueryContext, type AuthQueryOptions } from "./auth-query-provider"
 import { prefetchSession } from "./prefetch-session"
@@ -34,6 +35,15 @@ export function createAuthHooks<TAuthClient extends AuthClient>(authClient: TAut
         },
         useUpdateUser: (options?: Partial<AuthQueryOptions>) => useUpdateUser(authClient, options),
         useToken: (options?: Partial<AnyUseQueryOptions>) => useToken(authClient, options),
+        useAuthQuery: <TData>({
+            queryKey,
+            queryFn,
+            options
+        }: {
+            queryKey: QueryKey
+            queryFn: BetterFetchRequest<TData>
+            options?: Partial<AnyUseQueryOptions>
+        }) => useAuthQuery({ authClient, queryKey, queryFn, options }),
         useListAccounts: (options?: Partial<AnyUseQueryOptions>) =>
             useListAccounts(authClient, options),
         useUnlinkAccount: () => useUnlinkAccount(authClient),
@@ -54,6 +64,7 @@ export function createAuthHooks<TAuthClient extends AuthClient>(authClient: TAut
         useListPasskeys: (options?: Partial<AnyUseQueryOptions>) =>
             useListPasskeys(authClient as PasskeyAuthClient, options),
         useDeletePasskey: (options?: Partial<AuthQueryOptions>) =>
-            useDeletePasskey(authClient as PasskeyAuthClient, options)
+            useDeletePasskey(authClient as PasskeyAuthClient, options),
+        useAuthMutation: useAuthMutation
     }
 }

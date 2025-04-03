@@ -32,12 +32,27 @@ export const AuthQueryContext = createContext<AuthQueryOptions>(defaultAuthQuery
 
 export const AuthQueryProvider = ({
     children,
+    sessionQueryOptions,
+    tokenQueryOptions,
     ...props
 }: {
     children: ReactNode
 } & Partial<AuthQueryOptions>) => {
     return (
-        <AuthQueryContext.Provider value={{ ...defaultAuthQueryOptions, ...props }}>
+        <AuthQueryContext.Provider
+            value={{
+                sessionQueryOptions: {
+                    staleTime: 60 * 1000,
+                    ...sessionQueryOptions
+                },
+                tokenQueryOptions: {
+                    staleTime: 600 * 1000,
+                    ...tokenQueryOptions
+                },
+                ...defaultAuthQueryOptions,
+                ...props
+            }}
+        >
             {children}
         </AuthQueryContext.Provider>
     )
