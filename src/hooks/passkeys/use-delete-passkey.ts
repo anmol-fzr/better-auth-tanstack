@@ -8,7 +8,7 @@ export function useDeletePasskey<TAuthClient extends PasskeyAuthClient>(
     authClient: TAuthClient,
     options?: Partial<AuthQueryOptions>
 ) {
-    type DeletePasskeyParams = Parameters<PasskeyAuthClient["passkey"]["deletePasskey"]>[0]
+    type DeletePasskeyParams = { id: string }
 
     const { listPasskeysKey: queryKey } = useContext(AuthQueryContext)
 

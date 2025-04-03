@@ -8,7 +8,7 @@ export function useRevokeDeviceSession<TAuthClient extends MultiSessionAuthClien
     options?: Partial<AuthQueryOptions>
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
-    type RevokeDeviceSessionParams = Parameters<TAuthClient["multiSession"]["revoke"]>[0]
+    type RevokeDeviceSessionParams = { sessionToken: string }
 
     const { listDeviceSessionsKey: queryKey } = useContext(AuthQueryContext)
 
