@@ -1,7 +1,7 @@
 {
     "name": "@daveyplate/better-auth-tanstack",
     "homepage": "https://github.com/daveyplate/better-auth-tanstack",
-    "version": "1.2.32",
+    "version": "1.2.33",
     "description": "Tanstack hooks for better-auth",
     "scripts": {
         "build": "tsup --clean --dts",
@@ -33,7 +33,10 @@
             }
         }
     },
-    "files": ["src", "dist"],
+    "files": [
+        "src",
+        "dist"
+    ],
     "keywords": [
         "better-auth",
         "tanstack",
