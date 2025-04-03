@@ -6,7 +6,7 @@ import { useAuthMutation } from "../shared/use-auth-mutation"
 
 export function useDeletePasskey<TAuthClient extends PasskeyAuthClient>(
     authClient: TAuthClient,
-    options?: AuthQueryOptions
+    options?: Partial<AuthQueryOptions>
 ) {
     type DeletePasskeyParams = Parameters<PasskeyAuthClient["passkey"]["deletePasskey"]>[0]
 

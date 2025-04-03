@@ -9,7 +9,7 @@ import { useOnMutateError } from "../shared/use-mutate-error"
 
 export function useSetActiveSession<TAuthClient extends MultiSessionAuthClient>(
     authClient: TAuthClient,
-    options?: AuthQueryOptions
+    options?: Partial<AuthQueryOptions>
 ) {
     type SetActiveSessionParams = Parameters<TAuthClient["multiSession"]["setActive"]>[0]
 

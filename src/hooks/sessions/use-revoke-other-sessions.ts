@@ -6,7 +6,7 @@ import { useAuthMutation } from "../shared/use-auth-mutation"
 
 export function useRevokeOtherSessions<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
-    options?: AuthQueryOptions
+    options?: Partial<AuthQueryOptions>
 ) {
     type Session = TAuthClient["$Infer"]["Session"]["session"]
     type RevokeOtherSessionsParams = Parameters<TAuthClient["revokeOtherSessions"]>[0]

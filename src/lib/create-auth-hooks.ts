@@ -32,26 +32,28 @@ export function createAuthHooks<TAuthClient extends AuthClient>(authClient: TAut
                 prefetch: () => prefetchSession(authClient, queryClient, queryOptions, options)
             }
         },
-        useUpdateUser: (options?: AuthQueryOptions) => useUpdateUser(authClient, options),
+        useUpdateUser: (options?: Partial<AuthQueryOptions>) => useUpdateUser(authClient, options),
         useToken: (options?: Partial<AnyUseQueryOptions>) => useToken(authClient, options),
         useListAccounts: (options?: Partial<AnyUseQueryOptions>) =>
             useListAccounts(authClient, options),
         useUnlinkAccount: () => useUnlinkAccount(authClient),
         useListSessions: (options?: Partial<AnyUseQueryOptions>) =>
             useListSessions(authClient, options),
-        useRevokeSession: (options?: AuthQueryOptions) => useRevokeSession(authClient, options),
-        useRevokeSessions: (options?: AuthQueryOptions) => useRevokeSessions(authClient, options),
-        useRevokeOtherSessions: (options?: AuthQueryOptions) =>
+        useRevokeSession: (options?: Partial<AuthQueryOptions>) =>
+            useRevokeSession(authClient, options),
+        useRevokeSessions: (options?: Partial<AuthQueryOptions>) =>
+            useRevokeSessions(authClient, options),
+        useRevokeOtherSessions: (options?: Partial<AuthQueryOptions>) =>
             useRevokeOtherSessions(authClient, options),
         useListDeviceSessions: (options?: Partial<AnyUseQueryOptions>) =>
             useListDeviceSessions(authClient as MultiSessionAuthClient, options),
-        useRevokeDeviceSession: (options?: AuthQueryOptions) =>
-            useRevokeDeviceSession(authClient as MultiSessionAuthClient, options),
-        useSetActiveSession: (options?: AuthQueryOptions) =>
+        useRevokeDeviceSession: (options?: Partial<AuthQueryOptions>) =>
+            useRevokeDeviceSession(authClient, options),
+        useSetActiveSession: (options?: Partial<AuthQueryOptions>) =>
             useSetActiveSession(authClient as MultiSessionAuthClient, options),
         useListPasskeys: (options?: Partial<AnyUseQueryOptions>) =>
             useListPasskeys(authClient as PasskeyAuthClient, options),
-        useDeletePasskey: (options?: AuthQueryOptions) =>
+        useDeletePasskey: (options?: Partial<AuthQueryOptions>) =>
             useDeletePasskey(authClient as PasskeyAuthClient, options)
     }
 }

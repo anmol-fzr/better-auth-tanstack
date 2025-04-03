@@ -11,7 +11,7 @@ interface UseAuthMutationOptions<TParams, TData> {
     queryKey: QueryKey
     mutationFn(params: MutationParams<TParams>): Promise<ThrowableResult | NonThrowableResult>
     optimisticData?(params: TParams, previousData: TData): TData
-    options?: AuthQueryOptions
+    options?: Partial<AuthQueryOptions>
 }
 
 export function useAuthMutation<TParams, TData>({

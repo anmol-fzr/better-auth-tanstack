@@ -5,7 +5,7 @@ import { useAuthMutation } from "../shared/use-auth-mutation"
 
 export function useUpdateUser<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
-    options?: AuthQueryOptions
+    options?: Partial<AuthQueryOptions>
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
     type UpdateUserParams = Parameters<TAuthClient["updateUser"]>[0]
