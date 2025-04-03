@@ -48,7 +48,7 @@ export function createAuthHooks<TAuthClient extends AuthClient>(authClient: TAut
         useListDeviceSessions: (options?: Partial<AnyUseQueryOptions>) =>
             useListDeviceSessions(authClient as MultiSessionAuthClient, options),
         useRevokeDeviceSession: (options?: Partial<AuthQueryOptions>) =>
-            useRevokeDeviceSession(authClient, options),
+            useRevokeDeviceSession(authClient as MultiSessionAuthClient, options),
         useSetActiveSession: (options?: Partial<AuthQueryOptions>) =>
             useSetActiveSession(authClient as MultiSessionAuthClient, options),
         useListPasskeys: (options?: Partial<AnyUseQueryOptions>) =>
