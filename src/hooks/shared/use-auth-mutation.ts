@@ -50,11 +50,11 @@ export function useAuthMutation<
     const { mutate, isPending, error } = mutation
 
     async function mutateAsync(
-        params: TParams & { fetchOptions?: { throw?: true } | undefined }
+        params: Omit<TParams, "fetchOptions"> & { fetchOptions?: { throw?: true } | undefined }
     ): Promise<ThrowableResult>
 
     async function mutateAsync(
-        params: TParams & { fetchOptions?: BetterFetchOption }
+        params: Omit<TParams, "fetchOptions"> & { fetchOptions?: BetterFetchOption }
     ): Promise<NonThrowableResult>
 
     async function mutateAsync(params: TParams): Promise<ThrowableResult | NonThrowableResult> {
