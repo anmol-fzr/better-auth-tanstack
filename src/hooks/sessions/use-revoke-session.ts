@@ -13,8 +13,6 @@ export function useRevokeSession<TAuthClient extends AuthClient>(
     return useAuthMutation({
         queryKey,
         mutationFn: authClient.revokeSession,
-        optimisticData: ({ token }, previousSessions: Session[]) =>
-            previousSessions.filter((session) => session.token !== token),
         options
     })
 }

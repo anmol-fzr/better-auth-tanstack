@@ -1,4 +1,3 @@
-import type { Passkey } from "better-auth/plugins/passkey"
 import { useContext } from "react"
 import { AuthQueryContext, type AuthQueryOptions } from "../../lib/auth-query-provider"
 import type { PasskeyAuthClient } from "../../types/auth-client"
@@ -13,8 +12,6 @@ export function useDeletePasskey<TAuthClient extends PasskeyAuthClient>(
     return useAuthMutation({
         queryKey,
         mutationFn: authClient.passkey.deletePasskey,
-        optimisticData: ({ id }, previousPasskeys: Passkey[]) =>
-            previousPasskeys.filter((passkey) => passkey.id !== id),
         options
     })
 }

@@ -7,17 +7,11 @@ export function useRevokeDeviceSession<TAuthClient extends MultiSessionAuthClien
     authClient: TAuthClient,
     options?: Partial<AuthQueryOptions>
 ) {
-    type SessionData = TAuthClient["$Infer"]["Session"]
-
     const { listDeviceSessionsKey: queryKey } = useContext(AuthQueryContext)
 
     return useAuthMutation({
         queryKey,
         mutationFn: authClient.multiSession.revoke,
-        optimisticData: ({ sessionToken }, previousSessionDatas: SessionData[]) =>
-            previousSessionDatas.filter(
-                (sessionData) => sessionData.session.token !== sessionToken
-            ),
         options
     })
 }
