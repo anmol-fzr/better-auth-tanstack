@@ -61,7 +61,7 @@
         "tsup": "^8.4.0",
         "tsx": "^4.19.3",
         "turbo": "^2.5.0",
-        "typescript": "^5.8.2"
+        "typescript": "^5.8.3"
     },
     "peerDependencies": {
         "@tanstack/query-core": ">=5.65.0",

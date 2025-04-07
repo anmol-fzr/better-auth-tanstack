@@ -1,7 +1,7 @@
 import { multiSessionClient, passkeyClient } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 
-export type AuthClient = Omit<ReturnType<typeof createAuthClient>, "signUp">
+export type AuthClient = Omit<ReturnType<typeof createAuthClient>, "signUp" | "getSession">
 
 const passkeyAuthClient = createAuthClient({ plugins: [passkeyClient()] })
 export type PasskeyAuthClient = typeof passkeyAuthClient
