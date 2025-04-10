@@ -4,6 +4,8 @@ Tanstack Query hooks for Better Auth. Provides tighter control of when requests 
 
 More to come soon... (e.g. more SSR prefetches, organization & stripe plugin hooks, SWR port...)
 
+☕️ [Buy me a coffee](https://buymeacoffee.com/daveycodez)
+
 ## Prerequisites
 
 First, you need to install and integrate [Better Auth](https://better-auth.com) & [Tanstack Query](https://tanstack.com/query).
