@@ -113,7 +113,7 @@ export const {
     useDeletePasskey,
     useAuthQuery,
     useAuthMutation
-} = auth
+} = authHooks
 ```
 
 ## Using the Hooks
