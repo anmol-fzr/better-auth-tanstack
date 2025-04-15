@@ -19,8 +19,8 @@ export async function prefetchSession<TAuth extends BetterAuth>(
     queryKey = ["session"]
 ) {
     type SessionData = TAuth["$Infer"]["Session"] | null
-    type User = TAuth["$Infer"]["Session"]["user"] | undefined
-    type Session = TAuth["$Infer"]["Session"]["session"] | undefined
+    type User = TAuth["$Infer"]["Session"]["user"]
+    type Session = TAuth["$Infer"]["Session"]["session"]
 
     const queryFn = async () => (await getSession(auth, params)) as SessionData
 
@@ -30,7 +30,7 @@ export async function prefetchSession<TAuth extends BetterAuth>(
 
     return {
         data,
-        session: data?.session as Session,
-        user: data?.user as User
+        session: data?.session as Session | undefined,
+        user: data?.user as User | undefined
     }
 }

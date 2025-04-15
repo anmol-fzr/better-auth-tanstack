@@ -23,14 +23,14 @@ export async function prefetchSession<TAuthClient extends AuthClient>(
         queryFn: () => data as SessionData
     })
 
-    type SessionData = TAuthClient["$Infer"]["Session"] | undefined
-    type User = TAuthClient["$Infer"]["Session"]["user"] | undefined
-    type Session = TAuthClient["$Infer"]["Session"]["session"] | undefined
+    type SessionData = TAuthClient["$Infer"]["Session"]
+    type User = TAuthClient["$Infer"]["Session"]["user"]
+    type Session = TAuthClient["$Infer"]["Session"]["session"]
 
     return {
         error,
-        data: data as SessionData,
-        session: data?.session as Session,
-        user: data?.user as User
+        data: data,
+        session: data?.session as Session | undefined,
+        user: data?.user as User | undefined
     }
 }

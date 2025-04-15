@@ -9,8 +9,8 @@ export function useSession<TAuthClient extends AuthClient>(
     options?: Partial<AnyUseQueryOptions>
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
-    type User = TAuthClient["$Infer"]["Session"]
-    type Session = TAuthClient["$Infer"]["Session"]
+    type User = TAuthClient["$Infer"]["Session"]["user"]
+    type Session = TAuthClient["$Infer"]["Session"]["session"]
 
     const { sessionQueryOptions, sessionKey: queryKey, queryOptions } = useContext(AuthQueryContext)
     const mergedOptions = { ...queryOptions, ...sessionQueryOptions, ...options }
