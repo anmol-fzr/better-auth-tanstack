@@ -10,6 +10,7 @@ export type AuthQueryOptions = {
     sessionKey: QueryKey
     tokenKey: QueryKey
     listAccountsKey: QueryKey
+    listApiKeysKey: QueryKey
     listSessionsKey: QueryKey
     listDeviceSessionsKey: QueryKey
     listPasskeysKey: QueryKey
@@ -21,6 +22,7 @@ export const defaultAuthQueryOptions: AuthQueryOptions = {
     sessionKey: ["session"],
     tokenKey: ["token"],
     listAccountsKey: ["list-accounts"],
+    listApiKeysKey: ["list-api-keys"],
     listSessionsKey: ["list-sessions"],
     listDeviceSessionsKey: ["list-device-sessions"],
     listPasskeysKey: ["list-passkeys"],

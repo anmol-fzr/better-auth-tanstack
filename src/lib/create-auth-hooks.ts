@@ -4,6 +4,9 @@ import { useContext } from "react"
 
 import { useListAccounts } from "../hooks/accounts/use-list-accounts"
 import { useUnlinkAccount } from "../hooks/accounts/use-unlink-account"
+import { useCreateApiKey } from "../hooks/api-keys/use-create-api-key"
+import { useDeleteApiKey } from "../hooks/api-keys/use-delete-api-key"
+import { useListApiKeys } from "../hooks/api-keys/use-list-api-keys"
 import { useListDeviceSessions } from "../hooks/device-sessions/use-list-device-sessions"
 import { useRevokeDeviceSession } from "../hooks/device-sessions/use-revoke-device-session"
 import { useSetActiveSession } from "../hooks/device-sessions/use-set-active-session"
@@ -66,6 +69,12 @@ export function createAuthHooks<TAuthClient extends AnyAuthClient>(authClient: T
             useListPasskeys(authClient as AuthClient, options),
         useDeletePasskey: (options?: Partial<AuthQueryOptions>) =>
             useDeletePasskey(authClient as AuthClient, options),
+        useListApiKeys: (options?: Partial<AnyUseQueryOptions>) =>
+            useListApiKeys(authClient as AuthClient, options),
+        useCreateApiKey: (options?: Partial<AuthQueryOptions>) =>
+            useCreateApiKey(authClient as AuthClient, options),
+        useDeleteApiKey: (options?: Partial<AuthQueryOptions>) =>
+            useDeleteApiKey(authClient as AuthClient, options),
         useAuthMutation: useAuthMutation
     }
 }

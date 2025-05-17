@@ -5,7 +5,9 @@ export * from "./lib/prefetch-session"
 
 export type NonThrowableResult = {
     data: {
-        status: boolean
+        status?: boolean
+        success?: boolean
+        [key: string]: unknown
     } | null
     error: {
         code?: string | undefined
@@ -15,4 +17,4 @@ export type NonThrowableResult = {
     } | null
 }
 
-export type ThrowableResult = { status: boolean }
+export type ThrowableResult = { status?: boolean; [key: string]: unknown }
