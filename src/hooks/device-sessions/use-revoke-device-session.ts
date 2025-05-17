@@ -1,9 +1,9 @@
 import { useContext } from "react"
 import { AuthQueryContext, type AuthQueryOptions } from "../../lib/auth-query-provider"
-import type { MultiSessionAuthClient } from "../../types/auth-client"
+import type { AuthClient } from "../../types/auth-client"
 import { useAuthMutation } from "../shared/use-auth-mutation"
 
-export function useRevokeDeviceSession<TAuthClient extends MultiSessionAuthClient>(
+export function useRevokeDeviceSession<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
     options?: Partial<AuthQueryOptions>
 ) {

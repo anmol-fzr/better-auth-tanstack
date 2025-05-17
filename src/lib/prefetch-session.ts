@@ -1,15 +1,16 @@
 import type { AnyUseQueryOptions, QueryClient } from "@tanstack/react-query"
 
-import type { AuthClient, MultiSessionAuthClient } from "../types/auth-client"
+import type { AnyAuthClient } from "../types/any-auth-client"
+import type { AuthClient } from "../types/auth-client"
 import type { AuthQueryOptions } from "./auth-query-provider"
 
-export async function prefetchSession<TAuthClient extends AuthClient>(
+export async function prefetchSession<TAuthClient extends AnyAuthClient>(
     authClient: TAuthClient,
     queryClient: QueryClient,
     queryOptions?: AuthQueryOptions,
     options?: Partial<AnyUseQueryOptions>
 ) {
-    const { error, data } = await (authClient as MultiSessionAuthClient).getSession()
+    const { error, data } = await (authClient as AuthClient).getSession()
 
     const mergedOptions = {
         ...queryOptions?.queryOptions,

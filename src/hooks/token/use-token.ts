@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useMemo } from "react"
 
 import { AuthQueryContext } from "../../lib/auth-query-provider"
 
-import type { AuthClient } from "../../types/auth-client"
+import type { AnyAuthClient } from "../../types/any-auth-client"
 import { useSession } from "../session/use-session"
 import { useAuthQuery } from "../shared/use-auth-query"
 
@@ -20,7 +20,7 @@ export const decodeJwt = (token: string) => {
     return JSON.parse(parts[1])
 }
 
-export function useToken<TAuthClient extends AuthClient>(
+export function useToken<TAuthClient extends AnyAuthClient>(
     authClient: TAuthClient,
     options?: Partial<AnyUseQueryOptions>
 ) {

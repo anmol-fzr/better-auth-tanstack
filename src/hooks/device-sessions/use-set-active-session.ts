@@ -4,10 +4,10 @@ import { useContext } from "react"
 
 import { AuthQueryContext, type AuthQueryOptions } from "../../lib/auth-query-provider"
 
-import type { MultiSessionAuthClient } from "../../types/auth-client"
+import type { AuthClient } from "../../types/auth-client"
 import { useOnMutateError } from "../shared/use-mutate-error"
 
-export function useSetActiveSession<TAuthClient extends MultiSessionAuthClient>(
+export function useSetActiveSession<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
     options?: Partial<AuthQueryOptions>
 ) {

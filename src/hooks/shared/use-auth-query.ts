@@ -4,7 +4,7 @@ import type { BetterFetchOption, BetterFetchResponse } from "better-auth/react"
 import { useContext } from "react"
 
 import { AuthQueryContext } from "../../lib/auth-query-provider"
-import type { AuthClient } from "../../types/auth-client"
+import type { AnyAuthClient } from "../../types/any-auth-client"
 import { useSession } from "../session/use-session"
 
 export type BetterFetchRequest<TData> = ({
@@ -18,7 +18,7 @@ type UseAuthQueryProps<TData, TAuthClient> = {
     options?: Partial<AnyUseQueryOptions>
 }
 
-export function useAuthQuery<TData, TAuthClient extends AuthClient = AuthClient>({
+export function useAuthQuery<TData, TAuthClient extends AnyAuthClient = AnyAuthClient>({
     authClient,
     queryKey,
     queryFn,

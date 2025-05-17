@@ -3,10 +3,10 @@ import { useContext } from "react"
 
 import { AuthQueryContext } from "../../lib/auth-query-provider"
 
-import type { MultiSessionAuthClient } from "../../types/auth-client"
+import type { AuthClient } from "../../types/auth-client"
 import { useAuthQuery } from "../shared/use-auth-query"
 
-export function useListDeviceSessions<TAuthClient extends MultiSessionAuthClient>(
+export function useListDeviceSessions<TAuthClient extends AuthClient>(
     authClient: TAuthClient,
     options?: Partial<AnyUseQueryOptions>
 ) {

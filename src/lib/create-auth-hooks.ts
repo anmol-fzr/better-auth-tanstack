@@ -18,11 +18,12 @@ import { useRevokeSessions } from "../hooks/sessions/use-revoke-sessions"
 import { useAuthMutation } from "../hooks/shared/use-auth-mutation"
 import { type BetterFetchRequest, useAuthQuery } from "../hooks/shared/use-auth-query"
 import { useToken } from "../hooks/token/use-token"
-import type { AuthClient, MultiSessionAuthClient, PasskeyAuthClient } from "../types/auth-client"
+import type { AnyAuthClient } from "../types/any-auth-client"
+import type { AuthClient } from "../types/auth-client"
 import { AuthQueryContext, type AuthQueryOptions } from "./auth-query-provider"
 import { prefetchSession } from "./prefetch-session"
 
-export function createAuthHooks<TAuthClient extends AuthClient>(authClient: TAuthClient) {
+export function createAuthHooks<TAuthClient extends AnyAuthClient>(authClient: TAuthClient) {
     return {
         useSession: (options?: Partial<AnyUseQueryOptions>) => useSession(authClient, options),
         usePrefetchSession: (options?: Partial<AnyUseQueryOptions>) => {
@@ -56,15 +57,15 @@ export function createAuthHooks<TAuthClient extends AuthClient>(authClient: TAut
         useRevokeOtherSessions: (options?: Partial<AuthQueryOptions>) =>
             useRevokeOtherSessions(authClient, options),
         useListDeviceSessions: (options?: Partial<AnyUseQueryOptions>) =>
-            useListDeviceSessions(authClient as MultiSessionAuthClient, options),
+            useListDeviceSessions(authClient as AuthClient, options),
         useRevokeDeviceSession: (options?: Partial<AuthQueryOptions>) =>
-            useRevokeDeviceSession(authClient as MultiSessionAuthClient, options),
+            useRevokeDeviceSession(authClient as AuthClient, options),
         useSetActiveSession: (options?: Partial<AuthQueryOptions>) =>
-            useSetActiveSession(authClient as MultiSessionAuthClient, options),
+            useSetActiveSession(authClient as AuthClient, options),
         useListPasskeys: (options?: Partial<AnyUseQueryOptions>) =>
-            useListPasskeys(authClient as PasskeyAuthClient, options),
+            useListPasskeys(authClient as AuthClient, options),
         useDeletePasskey: (options?: Partial<AuthQueryOptions>) =>
-            useDeletePasskey(authClient as PasskeyAuthClient, options),
+            useDeletePasskey(authClient as AuthClient, options),
         useAuthMutation: useAuthMutation
     }
 }
