@@ -4,14 +4,18 @@ import { useContext } from "react"
 
 import { useListAccounts } from "../hooks/accounts/use-list-accounts"
 import { useUnlinkAccount } from "../hooks/accounts/use-unlink-account"
-import { useCreateApiKey } from "../hooks/api-keys/use-create-api-key"
-import { useDeleteApiKey } from "../hooks/api-keys/use-delete-api-key"
-import { useListApiKeys } from "../hooks/api-keys/use-list-api-keys"
+import { useCreateApiKey } from "../hooks/api-key/use-create-api-key"
+import { useDeleteApiKey } from "../hooks/api-key/use-delete-api-key"
+import { useListApiKeys } from "../hooks/api-key/use-list-api-keys"
 import { useListDeviceSessions } from "../hooks/device-sessions/use-list-device-sessions"
 import { useRevokeDeviceSession } from "../hooks/device-sessions/use-revoke-device-session"
 import { useSetActiveSession } from "../hooks/device-sessions/use-set-active-session"
-import { useDeletePasskey } from "../hooks/passkeys/use-delete-passkey"
-import { useListPasskeys } from "../hooks/passkeys/use-list-passkeys"
+import { useActiveOrganization } from "../hooks/organization/use-active-organization"
+import { useHasPermission } from "../hooks/organization/use-has-permission"
+import { useInvitation } from "../hooks/organization/use-invitation"
+import { useListOrganizations } from "../hooks/organization/use-list-organizations"
+import { useDeletePasskey } from "../hooks/passkey/use-delete-passkey"
+import { useListPasskeys } from "../hooks/passkey/use-list-passkeys"
 import { useSession } from "../hooks/session/use-session"
 import { useUpdateUser } from "../hooks/session/use-update-user"
 import { useListSessions } from "../hooks/sessions/use-list-sessions"
@@ -75,6 +79,18 @@ export function createAuthHooks<TAuthClient extends AnyAuthClient>(authClient: T
             useCreateApiKey(authClient as AuthClient, options),
         useDeleteApiKey: (options?: Partial<AuthQueryOptions>) =>
             useDeleteApiKey(authClient as AuthClient, options),
+        useActiveOrganization: (options?: Partial<AnyUseQueryOptions>) =>
+            useActiveOrganization(authClient as AuthClient, options),
+        useListOrganizations: (options?: Partial<AnyUseQueryOptions>) =>
+            useListOrganizations(authClient as AuthClient, options),
+        useHasPermission: (
+            params: Parameters<AuthClient["organization"]["hasPermission"]>[0],
+            options?: Partial<AnyUseQueryOptions>
+        ) => useHasPermission(authClient as AuthClient, params, options),
+        useInvitation: (
+            params: Parameters<AuthClient["organization"]["getInvitation"]>[0],
+            options?: Partial<AnyUseQueryOptions>
+        ) => useInvitation(authClient as AuthClient, params, options),
         useAuthMutation: useAuthMutation
     }
 }
