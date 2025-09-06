@@ -1,7 +1,6 @@
 import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
-import { useContext } from "react"
 
-import { AuthQueryContext } from "../../lib/auth-query-provider"
+import { useAuthQueryContext } from "../../lib/auth-query-provider"
 import type { AnyAuthClient } from "../../types/any-auth-client"
 import type { AuthClient } from "../../types/auth-client"
 
@@ -13,7 +12,7 @@ export function useSession<TAuthClient extends AnyAuthClient>(
     type User = TAuthClient["$Infer"]["Session"]["user"]
     type Session = TAuthClient["$Infer"]["Session"]["session"]
 
-    const { sessionQueryOptions, sessionKey: queryKey, queryOptions } = useContext(AuthQueryContext)
+    const { sessionQueryOptions, sessionKey: queryKey, queryOptions } = useAuthQueryContext()
     const mergedOptions = { ...queryOptions, ...sessionQueryOptions, ...options }
 
     const result = useQuery<SessionData>({

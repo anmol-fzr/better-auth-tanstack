@@ -1,8 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
-import { useContext } from "react"
 
-import { AuthQueryContext, type AuthQueryOptions } from "../../lib/auth-query-provider"
+import { useAuthQueryContext, type AuthQueryOptions } from "../../lib/auth-query-provider"
 
 import type { AuthClient } from "../../types/auth-client"
 import { useOnMutateError } from "../shared/use-mutate-error"
@@ -15,7 +14,7 @@ export function useSetActiveSession<TAuthClient extends AuthClient>(
 
     const queryClient = useQueryClient()
     const { onMutateError } = useOnMutateError()
-    const context = useContext(AuthQueryContext)
+    const context = useAuthQueryContext()
     const { listDeviceSessionsKey: queryKey } = { ...context, ...options }
 
     const mutation = useMutation({

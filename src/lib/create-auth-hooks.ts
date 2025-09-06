@@ -1,6 +1,5 @@
 import type { AnyUseQueryOptions, QueryKey } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query"
-import { useContext } from "react"
 
 import { useListAccounts } from "../hooks/accounts/use-list-accounts"
 import { useUnlinkAccount } from "../hooks/accounts/use-unlink-account"
@@ -27,7 +26,7 @@ import { type BetterFetchRequest, useAuthQuery } from "../hooks/shared/use-auth-
 import { useToken } from "../hooks/token/use-token"
 import type { AnyAuthClient } from "../types/any-auth-client"
 import type { AuthClient } from "../types/auth-client"
-import { AuthQueryContext, type AuthQueryOptions } from "./auth-query-provider"
+import { useAuthQueryContext, type AuthQueryOptions } from "./auth-query-provider"
 import { prefetchSession } from "./prefetch-session"
 
 export function createAuthHooks<TAuthClient extends AnyAuthClient>(authClient: TAuthClient) {
@@ -35,7 +34,7 @@ export function createAuthHooks<TAuthClient extends AnyAuthClient>(authClient: T
         useSession: (options?: Partial<AnyUseQueryOptions>) => useSession(authClient, options),
         usePrefetchSession: (options?: Partial<AnyUseQueryOptions>) => {
             const queryClient = useQueryClient()
-            const queryOptions = useContext(AuthQueryContext)
+            const queryOptions = useAuthQueryContext()
 
             return {
                 prefetch: () => prefetchSession(authClient, queryClient, queryOptions, options)

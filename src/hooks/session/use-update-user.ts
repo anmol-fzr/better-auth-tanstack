@@ -1,5 +1,4 @@
-import { useContext } from "react"
-import { AuthQueryContext, type AuthQueryOptions } from "../../lib/auth-query-provider"
+import { useAuthQueryContext, type AuthQueryOptions } from "../../lib/auth-query-provider"
 import type { AnyAuthClient } from "../../types/any-auth-client"
 import { useAuthMutation } from "../shared/use-auth-mutation"
 
@@ -9,7 +8,7 @@ export function useUpdateUser<TAuthClient extends AnyAuthClient>(
 ) {
     type SessionData = TAuthClient["$Infer"]["Session"]
 
-    const { sessionKey: queryKey } = useContext(AuthQueryContext)
+    const { sessionKey: queryKey } = useAuthQueryContext()
 
     return useAuthMutation({
         queryKey,

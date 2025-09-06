@@ -1,9 +1,8 @@
 import { type QueryKey, skipToken } from "@tanstack/query-core"
 import { type AnyUseQueryOptions, useQuery } from "@tanstack/react-query"
 import type { BetterFetchOption, BetterFetchResponse } from "better-auth/react"
-import { useContext } from "react"
 
-import { AuthQueryContext } from "../../lib/auth-query-provider"
+import { useAuthQueryContext } from "../../lib/auth-query-provider"
 import type { AnyAuthClient } from "../../types/any-auth-client"
 import { useSession } from "../session/use-session"
 
@@ -25,7 +24,7 @@ export function useAuthQuery<TData, TAuthClient extends AnyAuthClient = AnyAuthC
     options
 }: UseAuthQueryProps<TData, TAuthClient>) {
     const { data: sessionData } = useSession(authClient)
-    const { queryOptions } = useContext(AuthQueryContext)
+    const { queryOptions } = useAuthQueryContext()
     const mergedOptions = { ...queryOptions, ...options }
 
     return useQuery<TData>({

@@ -515,7 +515,7 @@ export function useUpdateUser(
     options?: Partial<AuthQueryOptions>
 ) {
     type SessionData = typeof authClient["$Infer"]["Session"]
-    const { sessionKey: queryKey } = useContext(AuthQueryContext)
+    const { sessionKey: queryKey } = useAuthQueryContext()
 
     return useAuthMutation({
         queryKey,
